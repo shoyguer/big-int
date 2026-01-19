@@ -83,4 +83,5 @@ If this plugin helped you, please, consider:
 ___
 
 Thanks to [ChronoDK](https://github.com/ChronoDK) for his [GodotBigNumberClass](https://github.com/ChronoDK/GodotBigNumberClass) which inspired and was the base for this plugin.
+
 And a BIG thanks to [Nikich](https://github.com/nikoladevelops) for his [godot-plus-plus](https://github.com/nikoladevelops/godot-plus-plus) template.
