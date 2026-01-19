@@ -3,8 +3,8 @@ A high-performance Big Number library for Godot games. Perfect for idle / increm
 
 ![Header Image](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/header_image.png)
 
-This plugin was built upon ChronoDk's [GodotBigNumberClass](https://github.com/ChronoDK/GodotBigNumberClass).
-Though my version uses GDExtension instead, which is more optimized.
+This plugin was built upon ChronoDk's [GodotBigNumberClass](https://github.com/ChronoDK/GodotBigNumberClass), credits to him!
+Though my version uses GDExtension instead, for optimization.
 
 Check the comparison below (results may vary):
 ![Testing Results](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/benchmark.png)
@@ -82,4 +82,5 @@ If this plugin helped you, please, consider:
 
 ___
 
+Thanks to [ChronoDK](https://github.com/ChronoDK) for his [GodotBigNumberClass](https://github.com/ChronoDK/GodotBigNumberClass) which inspired and was the base for this plugin.
 And a BIG thanks to [Nikich](https://github.com/nikoladevelops) for his [godot-plus-plus](https://github.com/nikoladevelops/godot-plus-plus) template.
