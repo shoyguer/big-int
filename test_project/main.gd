@@ -74,11 +74,13 @@ func update_ui_row(prefix: String, time_cpp: int, time_new: int) -> void:
 	if lbl_ratio_new:
 		if time_cpp > 0:
 			var ratio: float = float(time_new) / float(time_cpp)
-			lbl_ratio_new.text = "%.2fx" % ratio
+			lbl_ratio_new.text = "%.2f x" % ratio
 			if ratio > 1.0:
 				lbl_ratio_new.add_theme_color_override("font_color", Color.GREEN)
+				lbl_ratio_new.text = lbl_ratio_new.text + " Faster"
 			else:
 				lbl_ratio_new.add_theme_color_override("font_color", Color.RED)
+				lbl_ratio_new.text = lbl_ratio_new.text + " Slower"
 		else:
 			lbl_ratio_new.text = "Inf"
 

@@ -76,13 +76,13 @@ text = "BigNumber (C++)"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.407755, 0.817743, 0.463287, 1)
-text = "Big"
+text = "Big (GDScript)"
 
 [node name="H_Ratio2" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.968627, 1, 0, 1)
-text = "vs GD Big"
+text = "Comparison Results"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
