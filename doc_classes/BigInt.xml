@@ -1,22 +1,118 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BigInt" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Big number class for use in idle / incremental games.
 	</brief_description>
 	<description>
+		A RefCounted class designed to handle very large numbers that exceed the limits of standard integer and float types. It uses a mantissa and exponent representation to store numbers, allowing for a vast range of values commonly needed in idle or incremental games.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="divide" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Divides this BigInt by a number and returns a new BigInt result. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="divide_equals">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Divides this BigInt by a number in-place. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="is_equal_to" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the number is equal to input [param n].
+			</description>
+		</method>
+		<method name="is_greater_than" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the number is greater than input [param n].
+			</description>
+		</method>
+		<method name="is_greater_than_or_equal_to" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the number is greater than or equal to input [param n].
+			</description>
+		</method>
+		<method name="is_less_than" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the number is less than input [param n].
+			</description>
+		</method>
+		<method name="is_less_than_or_equal_to" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the number is less than or equal to input [param n].
+			</description>
+		</method>
+		<method name="minus" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Subtracts a number from this BigInt and returns a new BigInt result. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="minus_equals">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Subtracts a number from this BigInt in-place. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="multiply" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Multiplies this BigInt by a number and returns a new BigInt result. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="multiply_equals">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Multiplies this BigInt by a number in-place. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
 		<method name="normalize">
 			<return type="void" />
 			<description>
+				Normalizes the BigInt number, ensuring the mantissa is between 1.0 (inclusive) and 10.0 (exclusive), adjusting the exponent accordingly. This is called automatically by most operations.
+			</description>
+		</method>
+		<method name="plus" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Adds a number to this BigInt and returns a new BigInt result. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="plus_equals">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Adds a number to this BigInt in-place. The argument [param n] can be a BigInt, float, int, or String.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="exponent" type="int" setter="set_exponent" getter="get_exponent" default="0">
+			The exponent part of the scientific notation representation (e.g., the '5' in 1.23e5).
 		</member>
 		<member name="mantissa" type="float" setter="set_mantissa" getter="get_mantissa" default="1.0">
+			The mantissa (significand) part of the scientific notation representation (e.g., the '1.23' in 1.23e5). Normalization keeps this value between 1.0 and 10.0 for non-zero numbers.
 		</member>
 	</members>
 </class>

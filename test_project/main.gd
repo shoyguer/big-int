@@ -5,18 +5,29 @@ func _ready() -> void:
 
 func test_big_int() -> void:
 	print("--- Testing BigInt ---")
-	var num = BigInt.new()
-	print("Initial value: ", num) # Expected: 1e0 or similar
 	
-	num.mantissa = 123.0
-	print("After setting mantissa to 123.0: ", num) # Expected: 1.23e2
-	print("Mantissa: ", num.mantissa)
-	print("Exponent: ", num.exponent)
+	var a = BigInt.new()
+	a.mantissa = 1.5
+	a.exponent = 5
+	print("Created A (1.5e5 manually): ", a)
+
+	var b = BigInt.new()
+	b.mantissa = 1.0
+	b.exponent = 5
+	print("Created B (1.0e5 manually): ", b)
 	
-	num.exponent = 5
-	print("After setting exponent to 5: ", num) # Expected: 1.23e5 (if normalization doesn't change it further)
+	print("A > B: ", a.is_greater_than(b))
+	print("A < B: ", a.is_less_than(b))  
 	
-	num.mantissa = 0.05
-	print("After setting mantissa to 0.05: ", num) # Expected: 5e(5-2) -> 5e3
+	# Test Arithmetic with Variant (String)
+	# This exercises _type_check -> BigInt(Variant) -> BigInt(String)
+	print("Testing plus('1.0e5')...")
+	var sum = a.plus("1.0e5") 
+	print("A + '1.0e5' = ", sum)
+	
+	# Test Arithmetic with Variant (float)
+	print("Testing multiply(2.0)...")
+	var prod = a.multiply(2.0)
+	print("A * 2.0 = ", prod)
 	
 	print("--- End Test ---")
