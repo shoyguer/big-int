@@ -10,6 +10,8 @@ const ITERATIONS: int = 100000
 
 
 func _ready() -> void:
+	setup_table_style()
+
 	# Add a small delay to let the UI draw first so we don't freeze immediately on startup
 	await get_tree().create_timer(0.1).timeout
 
@@ -541,3 +543,44 @@ func benchmark_formatting_plain() -> void:
 	time_new = Time.get_ticks_usec() - time_new
 
 	update_ui_row("FmtPlain", time_cpp, time_new)
+
+
+## Sets up alternating row colors for the results table.
+func setup_table_style() -> void:
+	var grid: GridContainer = $Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer
+	var children: Array[Node] = grid.get_children()
+	var row_size: int = 4
+	
+	var odd_style: StyleBoxFlat = StyleBoxFlat.new()
+	odd_style.bg_color = Color(0, 0, 0, 0.2)
+	odd_style.content_margin_left = 5
+	odd_style.content_margin_right = 5
+	odd_style.set_corner_radius_all(4)
+
+	var even_style: StyleBoxFlat = StyleBoxFlat.new()
+	even_style.bg_color = Color(0, 0, 0, 0) # Transparent
+	even_style.content_margin_left = 5
+	even_style.content_margin_right = 5
+	even_style.set_corner_radius_all(4)
+
+	var data_index: int = 0
+	for child: Node in children:
+		var control: Control = child as Control
+		if not control:
+			continue
+			
+		# Skip headers (starting with H_) and Separators
+		if child.name.begins_with("H_") or child is Separator:
+			continue
+		
+		# Ensure label fills the cell for background consistency
+		control.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		
+		var row_idx: int = data_index / row_size
+		if row_idx % 2 == 1:
+			control.add_theme_stylebox_override("normal", odd_style)
+		else:
+			control.add_theme_stylebox_override("normal", even_style)
+		
+		data_index += 1

@@ -3,6 +3,12 @@ A high-performance Big Number library for Godot games. Perfect for idle / increm
 
 ![Header Image](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/header_image.png)
 
+This plugin was built upon ChronoDk's [GodotBigNumberClass](https://github.com/ChronoDK/GodotBigNumberClass).
+My version was uses GDExtension instead, which is more optimized.
+
+Check the comparison below:
+![Testing Results](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/testing_results.png)
+
 ## Why Use BigNumber?
 Managing massive numbers in games can be performance-heavy and complex. This plugin provides you with:
 - **Infinite Scaling**: Capable of handling numbers much larger than `float` or `int64`.
