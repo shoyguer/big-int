@@ -23,6 +23,12 @@
 				Divides this BigInt by a number in-place. The argument [param n] can be a BigInt, float, int, or String.
 			</description>
 		</method>
+		<method name="floor_value">
+			<return type="void" />
+			<description>
+				Rounds this BigInt down to the nearest whole integer.
+			</description>
+		</method>
 		<method name="is_equal_to" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="n" type="Variant" />
@@ -58,6 +64,18 @@
 				Returns [code]true[/code] if the number is less than or equal to input [param n].
 			</description>
 		</method>
+		<method name="ln" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the natural logarithm (base e) of this BigInt.
+			</description>
+		</method>
+		<method name="log10" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the base-10 logarithm of this BigInt.
+			</description>
+		</method>
 		<method name="minus" qualifiers="const">
 			<return type="BigInt" />
 			<param index="0" name="n" type="Variant" />
@@ -70,6 +88,13 @@
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Subtracts a number from this BigInt in-place. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="mod" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Returns the modulo of this BigInt by a number. The argument [param n] can be a BigInt, float, int, or String.
 			</description>
 		</method>
 		<method name="multiply" qualifiers="const">
@@ -104,6 +129,32 @@
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Adds a number to this BigInt in-place. The argument [param n] can be a BigInt, float, int, or String.
+			</description>
+		</method>
+		<method name="power" qualifiers="const">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Raises this BigInt to a power and returns a new BigInt result.
+			</description>
+		</method>
+		<method name="power_equals">
+			<return type="BigInt" />
+			<param index="0" name="n" type="Variant" />
+			<description>
+				Raises this BigInt to a power in-place.
+			</description>
+		</method>
+		<method name="square_root" qualifiers="const">
+			<return type="BigInt" />
+			<description>
+				Returns the square root of this BigInt as a new BigInt.
+			</description>
+		</method>
+		<method name="to_float" qualifiers="const">
+			<return type="float" />
+			<description>
+				Converts this BigInt to a float. Warning: Standard floats have limited precision and range.
 			</description>
 		</method>
 	</methods>

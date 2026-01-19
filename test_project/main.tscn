@@ -2,5 +2,364 @@
 
 [ext_resource type="Script" uid="uid://gscsivoywwwo" path="res://main.gd" id="1_ig7tw"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ig7tw")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "BigInt Benchmark Results (C++ vs Old GD vs New GD)"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 20
+columns = 6
+
+[node name="H_Op" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.783523, 0.783523, 0.783523, 1)
+text = "Operation"
+
+[node name="H_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.380721, 0.612012, 0.985552, 1)
+text = "BigInt (C++)"
+
+[node name="H_GDBigInt" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.6, 0.3, 1)
+text = "GDBigInt"
+
+[node name="H_GD" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.407755, 0.817743, 0.463287, 1)
+text = "Big"
+
+[node name="H_Ratio1" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.9, 0.3, 1)
+text = "vs GD BigInt"
+
+[node name="H_Ratio2" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.968627, 1, 0, 1)
+text = "vs GD Big"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator5" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator7" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="L_Inst" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Instantiation"
+
+[node name="Res_Inst_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Inst_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Inst_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Inst_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Inst_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Add" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Addition"
+
+[node name="Res_Add_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Add_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Add_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Add_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Add_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Sub" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Subtraction"
+
+[node name="Res_Sub_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sub_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sub_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sub_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sub_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Mul" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Multiplication"
+
+[node name="Res_Mul_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mul_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mul_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mul_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mul_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Div" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Division"
+
+[node name="Res_Div_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Div_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Div_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Div_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Div_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Mod" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Modulo"
+
+[node name="Res_Mod_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mod_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mod_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mod_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Mod_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Pow" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Power"
+
+[node name="Res_Pow_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Pow_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Pow_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Pow_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Pow_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Sqrt" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Square Root"
+
+[node name="Res_Sqrt_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sqrt_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sqrt_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sqrt_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Sqrt_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_Comp" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Comparison"
+
+[node name="Res_Comp_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Comp_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Comp_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Comp_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_Comp_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."

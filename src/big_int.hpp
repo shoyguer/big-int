@@ -44,6 +44,17 @@ public:
 	Ref<BigInt> divide(const Variant &n) const;
 	Ref<BigInt> divide_equals(const Variant &n);
 
+	Ref<BigInt> mod(const Variant &n) const;
+	Ref<BigInt> power(const Variant &n) const;
+	Ref<BigInt> power_equals(const Variant &n);
+	Ref<BigInt> square_root() const;
+	Ref<BigInt> absolute() const;
+
+	double log10() const;
+	double ln() const;
+	void floor_value();
+	double to_float() const;
+
 	String _to_string() const;
 
 protected:

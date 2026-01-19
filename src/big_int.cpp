@@ -260,6 +260,133 @@ Ref<BigInt> BigInt::divide_equals(const Variant &n) {
 	return Ref<BigInt>(this);
 }
 
+Ref<BigInt> BigInt::mod(const Variant &n) const {
+	Ref<BigInt> other = _type_check(n);
+	
+	Ref<BigInt> quot = divide(other);
+	quot->floor_value();
+	
+	Ref<BigInt> product = quot->multiply(other);
+	Ref<BigInt> res = minus(product);
+	return res;
+}
+
+Ref<BigInt> BigInt::power(const Variant &n) const {
+	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+	res->power_equals(n);
+	return res;
+}
+
+Ref<BigInt> BigInt::power_equals(const Variant &n) {
+	if (n.get_type() == Variant::INT) {
+		int64_t p = (int64_t)n;
+		if (p == 0) {
+			mantissa = 1.0;
+			exponent = 0;
+			return Ref<BigInt>(this);
+		}
+		// Handling negative int power? Original GDScript says "not fully supported in simple power", 
+		// but simple logic: x^-p = 1 / x^p.
+		// For now adapting GDScript logic:
+		/*
+			var new_exponent: int = exponent * p
+			var new_mantissa: float = mantissa ** float(p)
+			
+			mantissa = new_mantissa
+			exponent = new_exponent
+			normalize()
+		*/
+		int64_t new_exponent = exponent * p;
+		double new_mantissa = Math::pow(mantissa, (double)p);
+		
+		mantissa = new_mantissa;
+		exponent = new_exponent;
+		normalize();
+		return Ref<BigInt>(this);
+
+	} else if (n.get_type() == Variant::FLOAT) {
+		double p = (double)n;
+		if (mantissa == 0.0) return Ref<BigInt>(this);
+		
+		double log_val = log10();
+		double new_log = log_val * p;
+		
+		int64_t new_exponent = (int64_t)Math::floor(new_log);
+		double remainder = new_log - (double)new_exponent;
+		double new_mantissa = Math::pow(10.0, remainder);
+		
+		exponent = new_exponent;
+		mantissa = new_mantissa;
+		normalize();
+		return Ref<BigInt>(this);
+
+	} else if (n.get_type() == Variant::OBJECT) {
+		Ref<BigInt> other = n;
+		if (other.is_valid()) {
+			return power_equals(other->to_float());
+		}
+	}
+	// Fallback?
+	return Ref<BigInt>(this);
+}
+
+Ref<BigInt> BigInt::square_root() const {
+	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+	
+	if (res->exponent % 2 == 0) {
+		res->mantissa = Math::sqrt(res->mantissa);
+		res->exponent = res->exponent / 2;
+	} else {
+		res->mantissa = Math::sqrt(res->mantissa * 10.0);
+		// integer division in C++ rounds towards zero, but for negative odd numbers?
+		// e.g. -1 / 2 = 0. We want floor behavior usually for exponent math?
+		// check GDScript: (res.exponent - 1) / 2
+		// If exp=5. (5-1)/2 = 2. sqrt(m*10)*10^2 -> (sqrt(m*10))^2 * 10^4 = m*10 * 10^4 = m*10^5. Correct.
+		res->exponent = (res->exponent - 1) / 2;
+	}
+	
+	res->normalize();
+	return res;
+}
+
+Ref<BigInt> BigInt::absolute() const {
+	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+	res->mantissa = Math::abs(res->mantissa);
+	return res;
+}
+
+double BigInt::log10() const {
+	return (double)exponent + (Math::log(mantissa) / Math::log(10.0));
+}
+
+double BigInt::ln() const {
+	return log10() * 2.302585092994046;
+}
+
+void BigInt::floor_value() {
+	if (exponent == 0) {
+		mantissa = Math::floor(mantissa);
+	} else if (exponent < 0) {
+		mantissa = 0.0;
+		exponent = 0;
+	} else {
+		// If exponent is positive but small enough to have fractional parts visible in double precision
+		if (exponent < 16) {
+			double val = to_float();
+			val = Math::floor(val);
+			// Re-assigning from float will re-normalize
+			mantissa = val;
+			exponent = 0;
+			normalize();
+		}
+		// Else: assume integer
+	}
+}
+
+double BigInt::to_float() const {
+	return mantissa * Math::pow(10.0, (double)exponent);
+}
+
 String BigInt::_to_string() const {
 	return String::num_scientific(mantissa) + "e" + String::num_int64(exponent);
 }
@@ -288,6 +415,16 @@ void BigInt::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("multiply_equals", "n"), &BigInt::multiply_equals);
 	ClassDB::bind_method(D_METHOD("divide", "n"), &BigInt::divide);
 	ClassDB::bind_method(D_METHOD("divide_equals", "n"), &BigInt::divide_equals);
+
+	ClassDB::bind_method(D_METHOD("mod", "n"), &BigInt::mod);
+	ClassDB::bind_method(D_METHOD("power", "n"), &BigInt::power);
+	ClassDB::bind_method(D_METHOD("power_equals", "n"), &BigInt::power_equals);
+	ClassDB::bind_method(D_METHOD("square_root"), &BigInt::square_root);
+	ClassDB::bind_method(D_METHOD("absolute"), &BigInt::absolute);
+	ClassDB::bind_method(D_METHOD("log10"), &BigInt::log10);
+	ClassDB::bind_method(D_METHOD("ln"), &BigInt::ln);
+	ClassDB::bind_method(D_METHOD("floor_value"), &BigInt::floor_value);
+	ClassDB::bind_method(D_METHOD("to_float"), &BigInt::to_float);
 }
 
 
