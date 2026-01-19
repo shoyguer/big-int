@@ -57,11 +57,22 @@ public:
 
 	String _to_string() const;
 
+	// Formatting methods
+	String to_scientific(bool no_decimals_on_small_values = false, bool force_decimals = false) const;
+	String to_prefix(bool no_decimals_on_small_values = false, bool use_thousand_symbol = true, bool force_decimals = true, bool scientific_prefix = false) const;
+	String to_aa(bool no_decimals_on_small_values = false, bool use_thousand_symbol = true, bool force_decimals = false) const;
+	String to_metric_symbol(bool no_decimals_on_small_values = false) const;
+	String to_metric_name(bool no_decimals_on_small_values = false) const;
+
+	// Static configuration
+	static Dictionary get_options();
+	
 protected:
 	static void _bind_methods();
 
 private:
 	static Ref<BigInt> _type_check(const Variant &n);
+	static void _size_check(double p_mantissa);
 
 	double mantissa = 1.0;
 	int64_t exponent = 0;

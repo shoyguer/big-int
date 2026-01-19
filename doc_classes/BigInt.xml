@@ -9,6 +9,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="absolute" qualifiers="const">
+			<return type="BigInt" />
+			<description>
+				Returns a new BigInt with the absolute value.
+			</description>
+		</method>
 		<method name="divide" qualifiers="const">
 			<return type="BigInt" />
 			<param index="0" name="n" type="Variant" />
@@ -27,6 +33,12 @@
 			<return type="void" />
 			<description>
 				Rounds this BigInt down to the nearest whole integer.
+			</description>
+		</method>
+		<method name="get_options" qualifiers="static">
+			<return type="Dictionary" />
+			<description>
+				Returns the global options dictionary used for formatting. You can modify this dictionary to change formatting settings.
 			</description>
 		</method>
 		<method name="is_equal_to" qualifiers="const">
@@ -151,10 +163,51 @@
 				Returns the square root of this BigInt as a new BigInt.
 			</description>
 		</method>
+		<method name="to_aa" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<param index="1" name="use_thousand_symbol" type="bool" default="true" />
+			<param index="2" name="force_decimals" type="bool" default="false" />
+			<description>
+				Converts the BigInt to a string using AA notation (e.g., aa, ab, ac).
+			</description>
+		</method>
 		<method name="to_float" qualifiers="const">
 			<return type="float" />
 			<description>
 				Converts this BigInt to a float. Warning: Standard floats have limited precision and range.
+			</description>
+		</method>
+		<method name="to_metric_name" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<description>
+				Converts the BigInt to a string using metric names (e.g., kilo, mega, giga).
+			</description>
+		</method>
+		<method name="to_metric_symbol" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<description>
+				Converts the BigInt to a string using metric symbols (e.g., k, M, G).
+			</description>
+		</method>
+		<method name="to_prefix" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<param index="1" name="use_thousand_symbol" type="bool" default="true" />
+			<param index="2" name="force_decimals" type="bool" default="true" />
+			<param index="3" name="scientific_prefix" type="bool" default="false" />
+			<description>
+				Converts the BigInt to a string with a prefix. This is a helper method used by other formatting methods but can be used directly.
+			</description>
+		</method>
+		<method name="to_scientific" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<param index="1" name="force_decimals" type="bool" default="false" />
+			<description>
+				Converts the BigInt to a string using scientific notation (e.g., 1.23e5).
 			</description>
 		</method>
 	</methods>

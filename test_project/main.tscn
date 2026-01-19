@@ -363,3 +363,148 @@ text = "..."
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
+
+[node name="L_FmtSci" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Fmt: Scientific"
+
+[node name="Res_FmtSci_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSci_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSci_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSci_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSci_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_FmtPre" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Fmt: Prefix"
+
+[node name="Res_FmtPre_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtPre_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtPre_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtPre_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtPre_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_FmtAA" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Fmt: AA"
+
+[node name="Res_FmtAA_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtAA_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtAA_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtAA_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtAA_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_FmtSym" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Fmt: Metric Symbol"
+
+[node name="Res_FmtSym_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSym_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSym_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSym_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtSym_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="L_FmtNam" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Fmt: Metric Name"
+
+[node name="Res_FmtNam_CPP" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtNam_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtNam_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtNam_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."
+
+[node name="Res_FmtNam_RatioNew" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "..."

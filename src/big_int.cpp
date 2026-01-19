@@ -27,12 +27,14 @@ BigInt::BigInt(int64_t p_int) {
 }
 
 BigInt::BigInt(double p_float) {
+	_size_check(p_float);
 	mantissa = p_float;
 	exponent = 0;
 	normalize();
 }
 
 BigInt::BigInt(double p_mantissa, int64_t p_exponent) {
+	_size_check(p_mantissa);
 	mantissa = p_mantissa;
 	exponent = p_exponent;
 	normalize();
@@ -61,6 +63,7 @@ BigInt::BigInt(const Variant &p_val) {
 		exponent = 0;
 		// Error handling?
 	}
+	_size_check(mantissa);
 	normalize();
 }
 
@@ -68,6 +71,7 @@ BigInt::~BigInt() {
 }
 
 void BigInt::set_mantissa(double p_mantissa) {
+	_size_check(p_mantissa);
 	mantissa = p_mantissa;
 	normalize();
 }
@@ -106,6 +110,12 @@ Ref<BigInt> BigInt::_type_check(const Variant &n) {
 		}
 	}
 	return memnew(BigInt(n));
+}
+
+void BigInt::_size_check(double p_mantissa) {
+	if (p_mantissa > MANTISSA_MAX) {
+		ERR_PRINT("BigInt Error: Mantissa \"" + String::num(p_mantissa) + "\" exceeds MANTISSA_MAX.");
+	}
 }
 
 bool BigInt::is_less_than(const Variant &n) const {
@@ -391,7 +401,240 @@ String BigInt::_to_string() const {
 	return String::num_scientific(mantissa) + "e" + String::num_int64(exponent);
 }
 
+Dictionary BigInt::get_options() {
+	static Dictionary options;
+	if (options.is_empty()) {
+		options["default_mantissa"] = 1.0;
+		options["default_exponent"] = 0;
+		options["dynamic_decimals"] = false;
+		options["dynamic_numbers"] = 4;
+		options["small_decimals"] = 2;
+		options["thousand_decimals"] = 2;
+		options["big_decimals"] = 2;
+		options["scientific_decimals"] = 2;
+		options["logarithmic_decimals"] = 2;
+		options["maximum_trailing_zeroes"] = 3;
+		options["thousand_separator"] = ",";
+		options["decimal_separator"] = ".";
+		options["suffix_separator"] = "";
+		options["reading_separator"] = "";
+		options["thousand_name"] = "thousand";
+	}
+	return options;
+}
+
+String BigInt::to_scientific(bool no_decimals_on_small_values, bool force_decimals) const {
+	Dictionary opts = get_options();
+	int scientific_decimals = opts["scientific_decimals"];
+	bool dynamic_decimals = opts["dynamic_decimals"];
+	int dynamic_numbers = opts["dynamic_numbers"];
+	String decimal_separator = opts["decimal_separator"];
+	
+	if (exponent < 3) {
+		double decimal_increments = 1.0 / (Math::pow(10.0, scientific_decimals) / 10.0);
+		double val = Math::snapped(mantissa * Math::pow(10.0, (double)exponent), decimal_increments);
+		String value = String::num(val, scientific_decimals);
+		// Note: String::num might use '.' always? We should check if we need to replace it.
+		// Usually internal string is dot.
+		PackedStringArray split = value.split(".");
+		if (no_decimals_on_small_values) return split[0];
+		
+		if (split.size() > 1) {
+			int limit = scientific_decimals;
+			if (dynamic_decimals) limit = dynamic_numbers - split[0].length(); // Can be negative? MIN handles it?
+			limit = MAX(0, MIN(limit, scientific_decimals)); // Ensure positive
+			
+			String decimals = split[1].substr(0, limit);
+			if (decimals.is_empty()) return split[0];
+			return split[0] + decimal_separator + decimals;
+		} else {
+			return value;
+		}
+	} else {
+		// Mantissa is 1.0 to 10.0
+		String m_str = String::num(mantissa, scientific_decimals + 2); // Extra precision
+		PackedStringArray split = m_str.split(".");
+		if (split.size() == 1) split.append("");
+		
+		if (force_decimals) {
+			while (split[1].length() < scientific_decimals) split[1] += "0";
+		}
+		
+		int limit = scientific_decimals;
+		if (dynamic_decimals) limit = dynamic_numbers - 1 - String::num_int64(exponent).length();
+		limit = MAX(0, MIN(limit, scientific_decimals));
+		
+		String decl = split[1].substr(0, limit);
+		if (decl.is_empty() && !force_decimals) return split[0] + "e" + String::num_int64(exponent);
+		
+		return split[0] + decimal_separator + decl + "e" + String::num_int64(exponent);
+	}
+}
+
+String BigInt::to_prefix(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals, bool scientific_prefix) const {
+	Dictionary opts = get_options();
+	int small_decimals = opts["small_decimals"];
+	int thousand_decimals = opts["thousand_decimals"];
+	int big_decimals = opts["big_decimals"];
+	bool dynamic_decimals = opts["dynamic_decimals"];
+	int dynamic_numbers = opts["dynamic_numbers"];
+	String decimal_separator = opts["decimal_separator"];
+	String thousand_separator = opts["thousand_separator"];
+	
+	double number = mantissa;
+	if (!scientific_prefix) {
+		int hundreds = 1;
+		for (int i = 0; i < (exponent % 3); i++) hundreds *= 10;
+		number *= hundreds;
+	}
+	
+	String s_num = String::num(number, 10); 
+	PackedStringArray split = s_num.split(".");
+	if (split.size() == 1) split.append("");
+	
+	int max_decimals = MAX(MAX(small_decimals, thousand_decimals), big_decimals);
+	if (force_decimals) {
+		while (split[1].length() < max_decimals) split[1] += "0";
+	}
+	
+	if (no_decimals_on_small_values && exponent < 3) {
+		return split[0];
+	} else if (exponent < 3) {
+		if (small_decimals == 0 || split[1] == "") return split[0];
+		int limit = small_decimals;
+		if (dynamic_decimals) limit = dynamic_numbers - split[0].length();
+		limit = MAX(0, MIN(limit, small_decimals));
+		return split[0] + decimal_separator + split[1].substr(0, limit);
+	} else if (exponent < 6) {
+		if (thousand_decimals == 0 || (split[1] == "" && use_thousand_symbol)) return split[0];
+		
+		if (use_thousand_symbol) {
+			int limit = 3;
+			if (dynamic_decimals) limit = dynamic_numbers - split[0].length();
+			limit = MAX(0, MIN(limit, thousand_decimals));
+			return split[0] + decimal_separator + split[1].substr(0, limit);
+		} else {
+			return split[0] + thousand_separator + split[1].substr(0, 3);
+		}
+	} else {
+		if (big_decimals == 0 || split[1] == "") return split[0];
+		int limit = big_decimals;
+		if (dynamic_decimals) limit = dynamic_numbers - split[0].length();
+		limit = MAX(0, MIN(limit, big_decimals));
+		return split[0] + decimal_separator + split[1].substr(0, limit);
+	}
+}
+
+String BigInt::to_aa(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals) const {
+	static Dictionary suffixes_aa;
+	if (suffixes_aa.is_empty()) {
+		suffixes_aa["0"] = "";
+		suffixes_aa["1"] = "k";
+		suffixes_aa["2"] = "m";
+		suffixes_aa["3"] = "b";
+		suffixes_aa["4"] = "t";
+	}
+
+	Dictionary opts = get_options();
+	String suffix_separator = opts["suffix_separator"];
+	
+	int64_t target = exponent / 3;
+	String aa_index = String::num_int64(target);
+	String suffix = "";
+	
+	if (!suffixes_aa.has(aa_index)) {
+		// Generate suffix
+		static const char* alphabet[] = {
+			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+			"n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+		};
+		int64_t offset = target + 22; // Offset matching standard AA
+		int64_t base = 26;
+		
+		while (offset > 0) {
+			offset -= 1;
+			int digit = offset % base;
+			suffix = String(alphabet[digit]) + suffix;
+			offset /= base;
+		}
+		suffixes_aa[aa_index] = suffix;
+	} else {
+		suffix = suffixes_aa[aa_index];
+	}
+	
+	if (!use_thousand_symbol && target == 1) {
+		suffix = "";
+	}
+	
+	String prefix = to_prefix(no_decimals_on_small_values, use_thousand_symbol, force_decimals);
+	return prefix + suffix_separator + suffix;
+}
+
+String BigInt::to_metric_symbol(bool no_decimals_on_small_values) const {
+	static Dictionary suffixes_metric_symbol;
+	if (suffixes_metric_symbol.is_empty()) {
+		suffixes_metric_symbol["0"] = "";
+		suffixes_metric_symbol["1"] = "k";
+		suffixes_metric_symbol["2"] = "M";
+		suffixes_metric_symbol["3"] = "G";
+		suffixes_metric_symbol["4"] = "T";
+		suffixes_metric_symbol["5"] = "P";
+		suffixes_metric_symbol["6"] = "E";
+		suffixes_metric_symbol["7"] = "Z";
+		suffixes_metric_symbol["8"] = "Y";
+		suffixes_metric_symbol["9"] = "R";
+		suffixes_metric_symbol["10"] = "Q";
+	}
+	Dictionary opts = get_options();
+	String suffix_separator = opts["suffix_separator"];
+
+	int64_t target = exponent / 3;
+	String t_str = String::num_int64(target);
+	
+	if (!suffixes_metric_symbol.has(t_str)) {
+		return to_scientific();
+	} else {
+		return to_prefix(no_decimals_on_small_values) + suffix_separator + String(suffixes_metric_symbol[t_str]);
+	}
+}
+
+String BigInt::to_metric_name(bool no_decimals_on_small_values) const {
+	static Dictionary suffixes_metric_name;
+	if (suffixes_metric_name.is_empty()) {
+		suffixes_metric_name["0"] = "";
+		suffixes_metric_name["1"] = "kilo";
+		suffixes_metric_name["2"] = "mega";
+		suffixes_metric_name["3"] = "giga";
+		suffixes_metric_name["4"] = "tera";
+		suffixes_metric_name["5"] = "peta";
+		suffixes_metric_name["6"] = "exa";
+		suffixes_metric_name["7"] = "zetta";
+		suffixes_metric_name["8"] = "yotta";
+		suffixes_metric_name["9"] = "ronna";
+		suffixes_metric_name["10"] = "quetta";
+	}
+	Dictionary opts = get_options();
+	String suffix_separator = opts["suffix_separator"];
+
+	int64_t target = exponent / 3;
+	String t_str = String::num_int64(target);
+	
+	if (!suffixes_metric_name.has(t_str)) {
+		return to_scientific();
+	} else {
+		return to_prefix(no_decimals_on_small_values) + suffix_separator + String(suffixes_metric_name[t_str]);
+	}
+}
+
 void BigInt::_bind_methods() {
+	ClassDB::bind_static_method("BigInt", D_METHOD("get_options"), &BigInt::get_options);
+
+	ClassDB::bind_method(D_METHOD("to_scientific", "no_decimals_on_small_values", "force_decimals"), &BigInt::to_scientific, DEFVAL(false), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_prefix", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals", "scientific_prefix"), &BigInt::to_prefix, DEFVAL(false), DEFVAL(true), DEFVAL(true), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_aa", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals"), &BigInt::to_aa, DEFVAL(false), DEFVAL(true), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_metric_symbol", "no_decimals_on_small_values"), &BigInt::to_metric_symbol, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_metric_name", "no_decimals_on_small_values"), &BigInt::to_metric_name, DEFVAL(false));
+
 	ClassDB::bind_method(D_METHOD("set_mantissa", "mantissa"), &BigInt::set_mantissa);
 	ClassDB::bind_method(D_METHOD("get_mantissa"), &BigInt::get_mantissa);
 	ClassDB::bind_method(D_METHOD("set_exponent", "exponent"), &BigInt::set_exponent);

@@ -9,14 +9,33 @@ func _ready() -> void:
 	await get_tree().create_timer(0.1).timeout
 	
 	benchmark_instantiation()
+	await get_tree().process_frame
 	benchmark_addition()
+	await get_tree().process_frame
 	benchmark_subtraction()
+	await get_tree().process_frame
 	benchmark_multiplication()
+	await get_tree().process_frame
 	benchmark_division()
+	await get_tree().process_frame
 	benchmark_modulo()
+	await get_tree().process_frame
 	benchmark_power()
+	await get_tree().process_frame
 	benchmark_sqrt()
+	await get_tree().process_frame
 	benchmark_comparison()
+	await get_tree().process_frame
+	
+	benchmark_formatting_scientific()
+	await get_tree().process_frame
+	benchmark_formatting_prefix()
+	await get_tree().process_frame
+	benchmark_formatting_aa()
+	await get_tree().process_frame
+	benchmark_formatting_metric_symbol()
+	await get_tree().process_frame
+	benchmark_formatting_metric_name()
 
 func update_ui_row(prefix: String, time_cpp: int, time_old: int, time_new: int) -> void:
 	var lbl_cpp = get_node("%" + "Res_" + prefix + "_CPP") as Label
@@ -310,3 +329,128 @@ func benchmark_comparison() -> void:
 	time_new = Time.get_ticks_usec() - time_new
 	
 	update_ui_row("Comp", time_cpp, time_old, time_new)
+
+func benchmark_formatting_scientific() -> void:
+	var a_cpp = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 50
+	
+	var a_old = GDBigInt.new(1.23456, 50)
+	var a_new = Big.new(1.23456, 50)
+	
+	var time_cpp = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_cpp.to_scientific()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+	
+	var time_old = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_old.to_scientific()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_new.toScientific()
+	time_new = Time.get_ticks_usec() - time_new
+	
+	update_ui_row("FmtSci", time_cpp, time_old, time_new)
+
+func benchmark_formatting_prefix() -> void:
+	var a_cpp = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 50
+	
+	var a_old = GDBigInt.new(1.23456, 50)
+	var a_new = Big.new(1.23456, 50)
+	
+	var time_cpp = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_cpp.to_prefix()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+	
+	var time_old = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_old.to_prefix()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_new.toPrefix()
+	time_new = Time.get_ticks_usec() - time_new
+	
+	update_ui_row("FmtPre", time_cpp, time_old, time_new)
+
+func benchmark_formatting_aa() -> void:
+	var a_cpp = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 50
+	
+	var a_old = GDBigInt.new(1.23456, 50)
+	var a_new = Big.new(1.23456, 50)
+	
+	var time_cpp = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_cpp.to_aa()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+	
+	var time_old = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_old.to_aa()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_new.toAA()
+	time_new = Time.get_ticks_usec() - time_new
+	
+	update_ui_row("FmtAA", time_cpp, time_old, time_new)
+
+func benchmark_formatting_metric_symbol() -> void:
+	var a_cpp = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 12
+	
+	var a_old = GDBigInt.new(1.23456, 12)
+	var a_new = Big.new(1.23456, 12)
+	
+	var time_cpp = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_cpp.to_metric_symbol()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+	
+	var time_old = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_old.to_metric_symbol()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_new.toMetricSymbol()
+	time_new = Time.get_ticks_usec() - time_new
+	
+	update_ui_row("FmtSym", time_cpp, time_old, time_new)
+
+func benchmark_formatting_metric_name() -> void:
+	var a_cpp = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 12
+	
+	var a_old = GDBigInt.new(1.23456, 12)
+	var a_new = Big.new(1.23456, 12)
+	
+	var time_cpp = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_cpp.to_metric_name()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+	
+	var time_old = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_old.to_metric_name()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new = Time.get_ticks_usec()
+	for i in range(ITERATIONS):
+		var _s = a_new.toMetricName()
+	time_new = Time.get_ticks_usec() - time_new
+	
+	update_ui_row("FmtNam", time_cpp, time_old, time_new)
