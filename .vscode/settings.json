@@ -84,7 +84,7 @@
     "3d_build_profile.json":true,
     "build_profile.json":false,
     "dont_touch.txt":true,
-    "LICENSE":true,
+    "LICENSE":false,
     "README.md":false,
     "SConstruct":true,
     ".gitignore":true,
