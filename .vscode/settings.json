@@ -1,7 +1,6 @@
 {
   "explorer.autoReveal": false,
   "files.exclude": {
-    ".zed":true,
     "*.pdb":true,
     "src/**/*.o": true,
     "src/**/*.os": true,
@@ -71,7 +70,7 @@
     "__pycache__": true,
     "gen": true,
     "bin":true,
-    "test_project":true,
+    "test_project":false,
     "tools":true,
     ".clang-format": true,
     ".editorconfig": true,
@@ -80,19 +79,17 @@
     ".gitmodules": true,
     ".sconsign.dblite": true,
     "compile_commands.json": true,
-    "methods.py":true,
+    "methods.py":false,
     "2d_build_profile.json":true,
     "3d_build_profile.json":true,
-    "build_profile.json":true,
+    "build_profile.json":false,
     "dont_touch.txt":true,
     "LICENSE":true,
-    "README.md":true,
+    "README.md":false,
     "SConstruct":true,
     ".gitignore":true,
-    ".github":true,
+    ".github":false,
     "godot-cpp":true,
     "setup.py":false
-},
-  "files.eol": "\n",
-  "files.insertFinalNewline": true
+}
 }
