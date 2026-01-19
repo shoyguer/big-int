@@ -57,13 +57,13 @@ your_project_folder/
 (Since it is a GDExtension plugin, you don't need to activate it through Project Settings. Just restart the editor if classes don't appear immediately.)
 
 ## How to use BigNumber
-Check the [Wiki](https://github.com/shoyguer/seed/wiki) for information on how to use this plugin.
+Check the [Wiki](https://github.com/shoyguer/big-number/wiki) for information on how to use this plugin.
 
 Or jump to whatever you need:
 
 #### Wiki
-- [Class Reference](https://github.com/shoyguer/seed/wiki/1.-Class-Reference)
-- [Code Examples](https://github.com/shoyguer/seed/wiki/2.1.-GDScript-Code-Example)
+- [Class Reference](https://github.com/shoyguer/big-number/wiki/1.-Class-Reference)
+- [Code Examples](https://github.com/shoyguer/big-number/wiki/2.1.-GDScript-Code-Example)
 
 ## Other Plugins
 Check out my other Godot plugins:
