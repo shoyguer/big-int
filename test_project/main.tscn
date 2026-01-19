@@ -58,7 +58,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 20
-columns = 6
+columns = 4
 
 [node name="H_Op" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
@@ -70,25 +70,13 @@ text = "Operation"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.380721, 0.612012, 0.985552, 1)
-text = "BigInt (C++)"
-
-[node name="H_GDBigInt" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.9, 0.6, 0.3, 1)
-text = "GDBigInt"
+text = "BigNumber (C++)"
 
 [node name="H_GD" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.407755, 0.817743, 0.463287, 1)
 text = "Big"
-
-[node name="H_Ratio1" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.9, 0.9, 0.3, 1)
-text = "vs GD BigInt"
 
 [node name="H_Ratio2" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
@@ -102,13 +90,7 @@ layout_mode = 2
 [node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 
-[node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-layout_mode = 2
-
 [node name="HSeparator5" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-layout_mode = 2
-
-[node name="HSeparator6" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 
 [node name="HSeparator7" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
@@ -123,17 +105,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Inst_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Inst_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Inst_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -152,17 +124,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Add_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Add_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Add_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -181,17 +143,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Sub_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Sub_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Sub_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -210,17 +162,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Mul_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Mul_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Mul_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -239,17 +181,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Div_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Div_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Div_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -268,17 +200,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Mod_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Mod_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Mod_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -297,17 +219,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Pow_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Pow_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Pow_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -326,17 +238,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Sqrt_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Sqrt_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Sqrt_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -355,17 +257,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Comp_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Comp_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Comp_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -384,17 +276,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtSci_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtSci_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtSci_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -413,17 +295,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtPre_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtPre_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtPre_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -442,17 +314,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtAA_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtAA_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtAA_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -471,17 +333,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtSym_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtSym_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtSym_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -500,17 +352,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtNam_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtNam_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtNam_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -529,17 +371,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_IsEq_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_IsEq_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_IsEq_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -558,17 +390,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Abs_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Abs_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Abs_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -587,17 +409,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Log10_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Log10_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Log10_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -616,17 +428,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Ln_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Ln_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Ln_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -645,17 +447,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_Floor_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_Floor_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_Floor_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -674,17 +466,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_ToFloat_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_ToFloat_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_ToFloat_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."
@@ -703,17 +485,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "..."
 
-[node name="Res_FmtPlain_Old" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
 [node name="Res_FmtPlain_New" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "..."
-
-[node name="Res_FmtPlain_RatioOld" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "..."

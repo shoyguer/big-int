@@ -1,48 +1,48 @@
-#include "big_int.hpp"
+#include "big_number.hpp"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/core/math.hpp>
 
 using namespace godot;
 
-const double BigInt::MANTISSA_MAX = 1209600.0;
-const double BigInt::MANTISSA_PRECISION = 0.0000001;
+const double BigNumber::MANTISSA_MAX = 1209600.0;
+const double BigNumber::MANTISSA_PRECISION = 0.0000001;
 
-BigInt::BigInt() {
+BigNumber::BigNumber() {
 	mantissa = 1.0;
 	exponent = 0;
 }
 
-BigInt::BigInt(const String &p_string) {
+BigNumber::BigNumber(const String &p_string) {
 	PackedStringArray scientific = p_string.split("e");
 	mantissa = scientific[0].to_float();
 	exponent = scientific.size() > 1 ? scientific[1].to_int() : 0;
 	normalize();
 }
 
-BigInt::BigInt(int64_t p_int) {
+BigNumber::BigNumber(int64_t p_int) {
 	mantissa = (double)p_int;
 	exponent = 0;
 	normalize();
 }
 
-BigInt::BigInt(double p_float) {
+BigNumber::BigNumber(double p_float) {
 	_size_check(p_float);
 	mantissa = p_float;
 	exponent = 0;
 	normalize();
 }
 
-BigInt::BigInt(double p_mantissa, int64_t p_exponent) {
+BigNumber::BigNumber(double p_mantissa, int64_t p_exponent) {
 	_size_check(p_mantissa);
 	mantissa = p_mantissa;
 	exponent = p_exponent;
 	normalize();
 }
 
-BigInt::BigInt(const Variant &p_val) {
+BigNumber::BigNumber(const Variant &p_val) {
 	if (p_val.get_type() == Variant::OBJECT) {
-		Ref<BigInt> m = p_val;
+		Ref<BigNumber> m = p_val;
 		if (m.is_valid()) {
 			mantissa = m->get_mantissa();
 			exponent = m->get_exponent();
@@ -67,29 +67,29 @@ BigInt::BigInt(const Variant &p_val) {
 	normalize();
 }
 
-BigInt::~BigInt() {
+BigNumber::~BigNumber() {
 }
 
-void BigInt::set_mantissa(double p_mantissa) {
+void BigNumber::set_mantissa(double p_mantissa) {
 	_size_check(p_mantissa);
 	mantissa = p_mantissa;
 	normalize();
 }
 
-double BigInt::get_mantissa() const {
+double BigNumber::get_mantissa() const {
 	return mantissa;
 }
 
-void BigInt::set_exponent(int64_t p_exponent) {
+void BigNumber::set_exponent(int64_t p_exponent) {
 	exponent = p_exponent;
 	normalize();
 }
 
-int64_t BigInt::get_exponent() const {
+int64_t BigNumber::get_exponent() const {
 	return exponent;
 }
 
-void BigInt::normalize() {
+void BigNumber::normalize() {
 	if (mantissa == 0.0) {
 		exponent = 0;
 		return;
@@ -110,7 +110,7 @@ void BigInt::normalize() {
 	}
 }
 
-void BigInt::_get_values(const Variant &n, double &r_mantissa, int64_t &r_exponent) {
+void BigNumber::_get_values(const Variant &n, double &r_mantissa, int64_t &r_exponent) {
 	if (n.get_type() == Variant::INT) {
 		r_mantissa = (double)(int64_t)n;
 		r_exponent = 0;
@@ -118,7 +118,7 @@ void BigInt::_get_values(const Variant &n, double &r_mantissa, int64_t &r_expone
 		r_mantissa = (double)n;
 		r_exponent = 0;
 	} else if (n.get_type() == Variant::OBJECT) {
-		Ref<BigInt> b = n;
+		Ref<BigNumber> b = n;
 		if (b.is_valid()) {
 			r_mantissa = b->get_mantissa();
 			r_exponent = b->get_exponent();
@@ -127,7 +127,7 @@ void BigInt::_get_values(const Variant &n, double &r_mantissa, int64_t &r_expone
 		// Invalid object, fall through to fallback
 	} else {
 		// Fallback/String/Other
-		Ref<BigInt> temp = memnew(BigInt(n));
+		Ref<BigNumber> temp = memnew(BigNumber(n));
 		r_mantissa = temp->get_mantissa();
 		r_exponent = temp->get_exponent();
 		return;
@@ -151,23 +151,23 @@ void BigInt::_get_values(const Variant &n, double &r_mantissa, int64_t &r_expone
 	}
 }
 
-Ref<BigInt> BigInt::_type_check(const Variant &n) {
+Ref<BigNumber> BigNumber::_type_check(const Variant &n) {
 	if (n.get_type() == Variant::OBJECT) {
-		Ref<BigInt> b = n;
+		Ref<BigNumber> b = n;
 		if (b.is_valid()) {
 			return b;
 		}
 	}
-	return memnew(BigInt(n));
+	return memnew(BigNumber(n));
 }
 
-void BigInt::_size_check(double p_mantissa) {
+void BigNumber::_size_check(double p_mantissa) {
 	if (p_mantissa > MANTISSA_MAX) {
-		ERR_PRINT("BigInt Error: Mantissa \"" + String::num(p_mantissa) + "\" exceeds MANTISSA_MAX.");
+		ERR_PRINT("BigNumber Error: Mantissa \"" + String::num(p_mantissa) + "\" exceeds MANTISSA_MAX.");
 	}
 }
 
-bool BigInt::is_less_than(const Variant &n) const {
+bool BigNumber::is_less_than(const Variant &n) const {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
@@ -191,19 +191,19 @@ bool BigInt::is_less_than(const Variant &n) const {
 	}
 }
 
-bool BigInt::is_equal_to(const Variant &n) const {
+bool BigNumber::is_equal_to(const Variant &n) const {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
 	return other_exponent == exponent && Math::is_equal_approx(other_mantissa, mantissa);
 }
 
-bool BigInt::is_greater_than(const Variant &n) const {
+bool BigNumber::is_greater_than(const Variant &n) const {
 	return !is_less_than_or_equal_to(n);
 }
 
-bool BigInt::is_less_than_or_equal_to(const Variant &n) const {
-	Ref<BigInt> other = _type_check(n);
+bool BigNumber::is_less_than_or_equal_to(const Variant &n) const {
+	Ref<BigNumber> other = _type_check(n);
 	if (is_less_than(other)) {
 		return true;
 	}
@@ -213,17 +213,17 @@ bool BigInt::is_less_than_or_equal_to(const Variant &n) const {
 	return false;
 }
 
-bool BigInt::is_greater_than_or_equal_to(const Variant &n) const {
+bool BigNumber::is_greater_than_or_equal_to(const Variant &n) const {
 	return !is_less_than(n);
 }
 
-Ref<BigInt> BigInt::plus(const Variant &n) const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::plus(const Variant &n) const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->plus_equals(n);
 	return res;
 }
 
-Ref<BigInt> BigInt::plus_equals(const Variant &n) {
+Ref<BigNumber> BigNumber::plus_equals(const Variant &n) {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
@@ -250,16 +250,16 @@ Ref<BigInt> BigInt::plus_equals(const Variant &n) {
 	}
 	
 	normalize();
-	return Ref<BigInt>(this);
+	return Ref<BigNumber>(this);
 }
 
-Ref<BigInt> BigInt::minus(const Variant &n) const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::minus(const Variant &n) const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->minus_equals(n);
 	return res;
 }
 
-Ref<BigInt> BigInt::minus_equals(const Variant &n) {
+Ref<BigNumber> BigNumber::minus_equals(const Variant &n) {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
@@ -286,16 +286,16 @@ Ref<BigInt> BigInt::minus_equals(const Variant &n) {
 	}
 	
 	normalize();
-	return Ref<BigInt>(this);
+	return Ref<BigNumber>(this);
 }
 
-Ref<BigInt> BigInt::multiply(const Variant &n) const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::multiply(const Variant &n) const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->multiply_equals(n);
 	return res;
 }
 
-Ref<BigInt> BigInt::multiply_equals(const Variant &n) {
+Ref<BigNumber> BigNumber::multiply_equals(const Variant &n) {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
@@ -304,56 +304,56 @@ Ref<BigInt> BigInt::multiply_equals(const Variant &n) {
 	mantissa *= other_mantissa;
 	
 	normalize();
-	return Ref<BigInt>(this);
+	return Ref<BigNumber>(this);
 }
 
-Ref<BigInt> BigInt::divide(const Variant &n) const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::divide(const Variant &n) const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->divide_equals(n);
 	return res;
 }
 
-Ref<BigInt> BigInt::divide_equals(const Variant &n) {
+Ref<BigNumber> BigNumber::divide_equals(const Variant &n) {
 	double other_mantissa;
 	int64_t other_exponent;
 	_get_values(n, other_mantissa, other_exponent);
 	
 	if (other_mantissa == 0.0) {
-		ERR_PRINT("BigInt Error: Divide by zero");
-		return Ref<BigInt>(this);
+		ERR_PRINT("BigNumber Error: Divide by zero");
+		return Ref<BigNumber>(this);
 	}
 	
 	exponent -= other_exponent;
 	mantissa /= other_mantissa;
 	
 	normalize();
-	return Ref<BigInt>(this);
+	return Ref<BigNumber>(this);
 }
 
-Ref<BigInt> BigInt::mod(const Variant &n) const {
-	Ref<BigInt> other = _type_check(n);
+Ref<BigNumber> BigNumber::mod(const Variant &n) const {
+	Ref<BigNumber> other = _type_check(n);
 	
-	Ref<BigInt> quot = divide(other);
+	Ref<BigNumber> quot = divide(other);
 	quot->floor_value();
 	
-	Ref<BigInt> product = quot->multiply(other);
-	Ref<BigInt> res = minus(product);
+	Ref<BigNumber> product = quot->multiply(other);
+	Ref<BigNumber> res = minus(product);
 	return res;
 }
 
-Ref<BigInt> BigInt::power(const Variant &n) const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::power(const Variant &n) const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->power_equals(n);
 	return res;
 }
 
-Ref<BigInt> BigInt::power_equals(const Variant &n) {
+Ref<BigNumber> BigNumber::power_equals(const Variant &n) {
 	if (n.get_type() == Variant::INT) {
 		int64_t p = (int64_t)n;
 		if (p == 0) {
 			mantissa = 1.0;
 			exponent = 0;
-			return Ref<BigInt>(this);
+			return Ref<BigNumber>(this);
 		}
 		// Handling negative int power? Original GDScript says "not fully supported in simple power", 
 		// but simple logic: x^-p = 1 / x^p.
@@ -372,11 +372,11 @@ Ref<BigInt> BigInt::power_equals(const Variant &n) {
 		mantissa = new_mantissa;
 		exponent = new_exponent;
 		normalize();
-		return Ref<BigInt>(this);
+		return Ref<BigNumber>(this);
 
 	} else if (n.get_type() == Variant::FLOAT) {
 		double p = (double)n;
-		if (mantissa == 0.0) return Ref<BigInt>(this);
+		if (mantissa == 0.0) return Ref<BigNumber>(this);
 		
 		double log_val = log10();
 		double new_log = log_val * p;
@@ -388,20 +388,20 @@ Ref<BigInt> BigInt::power_equals(const Variant &n) {
 		exponent = new_exponent;
 		mantissa = new_mantissa;
 		normalize();
-		return Ref<BigInt>(this);
+		return Ref<BigNumber>(this);
 
 	} else if (n.get_type() == Variant::OBJECT) {
-		Ref<BigInt> other = n;
+		Ref<BigNumber> other = n;
 		if (other.is_valid()) {
 			return power_equals(other->to_float());
 		}
 	}
 	// Fallback?
-	return Ref<BigInt>(this);
+	return Ref<BigNumber>(this);
 }
 
-Ref<BigInt> BigInt::square_root() const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::square_root() const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	
 	if (res->exponent % 2 == 0) {
 		res->mantissa = Math::sqrt(res->mantissa);
@@ -419,21 +419,21 @@ Ref<BigInt> BigInt::square_root() const {
 	return res;
 }
 
-Ref<BigInt> BigInt::absolute() const {
-	Ref<BigInt> res = memnew(BigInt(mantissa, exponent));
+Ref<BigNumber> BigNumber::absolute() const {
+	Ref<BigNumber> res = memnew(BigNumber(mantissa, exponent));
 	res->mantissa = Math::abs(res->mantissa);
 	return res;
 }
 
-double BigInt::log10() const {
+double BigNumber::log10() const {
 	return (double)exponent + (Math::log(mantissa) / Math::log(10.0));
 }
 
-double BigInt::ln() const {
+double BigNumber::ln() const {
 	return log10() * 2.302585092994046;
 }
 
-void BigInt::floor_value() {
+void BigNumber::floor_value() {
 	if (exponent == 0) {
 		mantissa = Math::floor(mantissa);
 	} else if (exponent < 0) {
@@ -453,15 +453,15 @@ void BigInt::floor_value() {
 	}
 }
 
-double BigInt::to_float() const {
+double BigNumber::to_float() const {
 	return mantissa * Math::pow(10.0, (double)exponent);
 }
 
-String BigInt::to_plain_scientific() const {
+String BigNumber::to_plain_scientific() const {
 	return String::num(mantissa) + "e" + String::num_int64(exponent);
 }
 
-String BigInt::_to_string() const {
+String BigNumber::_to_string() const {
 	String m_str = String::num(mantissa);
 	int mantissa_decimals = 0;
 	if (m_str.find(".") >= 0) {
@@ -483,7 +483,7 @@ String BigInt::_to_string() const {
 	}
 }
 
-Dictionary BigInt::get_options() {
+Dictionary BigNumber::get_options() {
 	static Dictionary options;
 	if (options.is_empty()) {
 		options["default_mantissa"] = 1.0;
@@ -505,7 +505,7 @@ Dictionary BigInt::get_options() {
 	return options;
 }
 
-String BigInt::to_scientific(bool no_decimals_on_small_values, bool force_decimals) const {
+String BigNumber::to_scientific(bool no_decimals_on_small_values, bool force_decimals) const {
 	static const StringName sn_scientific_decimals("scientific_decimals");
 	static const StringName sn_dynamic_decimals("dynamic_decimals");
 	static const StringName sn_dynamic_numbers("dynamic_numbers");
@@ -558,7 +558,7 @@ String BigInt::to_scientific(bool no_decimals_on_small_values, bool force_decima
 	}
 }
 
-String BigInt::to_prefix(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals, bool scientific_prefix) const {
+String BigNumber::to_prefix(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals, bool scientific_prefix) const {
 	static const StringName sn_small_decimals("small_decimals");
 	static const StringName sn_thousand_decimals("thousand_decimals");
 	static const StringName sn_big_decimals("big_decimals");
@@ -620,7 +620,7 @@ String BigInt::to_prefix(bool no_decimals_on_small_values, bool use_thousand_sym
 	}
 }
 
-String BigInt::to_aa(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals) const {
+String BigNumber::to_aa(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals) const {
 	static Dictionary suffixes_aa;
 	if (suffixes_aa.is_empty()) {
 		suffixes_aa["0"] = "";
@@ -666,7 +666,7 @@ String BigInt::to_aa(bool no_decimals_on_small_values, bool use_thousand_symbol,
 	return prefix + suffix_separator + suffix;
 }
 
-String BigInt::to_metric_symbol(bool no_decimals_on_small_values) const {
+String BigNumber::to_metric_symbol(bool no_decimals_on_small_values) const {
 	static Dictionary suffixes_metric_symbol;
 	if (suffixes_metric_symbol.is_empty()) {
 		suffixes_metric_symbol["0"] = "";
@@ -695,7 +695,7 @@ String BigInt::to_metric_symbol(bool no_decimals_on_small_values) const {
 	}
 }
 
-String BigInt::to_metric_name(bool no_decimals_on_small_values) const {
+String BigNumber::to_metric_name(bool no_decimals_on_small_values) const {
 	static Dictionary suffixes_metric_name;
 	if (suffixes_metric_name.is_empty()) {
 		suffixes_metric_name["0"] = "";
@@ -724,49 +724,49 @@ String BigInt::to_metric_name(bool no_decimals_on_small_values) const {
 	}
 }
 
-void BigInt::_bind_methods() {
-	ClassDB::bind_static_method("BigInt", D_METHOD("get_options"), &BigInt::get_options);
+void BigNumber::_bind_methods() {
+	ClassDB::bind_static_method("BigNumber", D_METHOD("get_options"), &BigNumber::get_options);
 
-	ClassDB::bind_method(D_METHOD("to_scientific", "no_decimals_on_small_values", "force_decimals"), &BigInt::to_scientific, DEFVAL(false), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("to_prefix", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals", "scientific_prefix"), &BigInt::to_prefix, DEFVAL(false), DEFVAL(true), DEFVAL(true), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("to_aa", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals"), &BigInt::to_aa, DEFVAL(false), DEFVAL(true), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("to_metric_symbol", "no_decimals_on_small_values"), &BigInt::to_metric_symbol, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("to_metric_name", "no_decimals_on_small_values"), &BigInt::to_metric_name, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_scientific", "no_decimals_on_small_values", "force_decimals"), &BigNumber::to_scientific, DEFVAL(false), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_prefix", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals", "scientific_prefix"), &BigNumber::to_prefix, DEFVAL(false), DEFVAL(true), DEFVAL(true), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_aa", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals"), &BigNumber::to_aa, DEFVAL(false), DEFVAL(true), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_metric_symbol", "no_decimals_on_small_values"), &BigNumber::to_metric_symbol, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_metric_name", "no_decimals_on_small_values"), &BigNumber::to_metric_name, DEFVAL(false));
 
-	ClassDB::bind_method(D_METHOD("set_mantissa", "mantissa"), &BigInt::set_mantissa);
-	ClassDB::bind_method(D_METHOD("get_mantissa"), &BigInt::get_mantissa);
-	ClassDB::bind_method(D_METHOD("set_exponent", "exponent"), &BigInt::set_exponent);
-	ClassDB::bind_method(D_METHOD("get_exponent"), &BigInt::get_exponent);
-	ClassDB::bind_method(D_METHOD("normalize"), &BigInt::normalize);
+	ClassDB::bind_method(D_METHOD("set_mantissa", "mantissa"), &BigNumber::set_mantissa);
+	ClassDB::bind_method(D_METHOD("get_mantissa"), &BigNumber::get_mantissa);
+	ClassDB::bind_method(D_METHOD("set_exponent", "exponent"), &BigNumber::set_exponent);
+	ClassDB::bind_method(D_METHOD("get_exponent"), &BigNumber::get_exponent);
+	ClassDB::bind_method(D_METHOD("normalize"), &BigNumber::normalize);
 
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mantissa"), "set_mantissa", "get_mantissa");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "exponent"), "set_exponent", "get_exponent");
 
-	ClassDB::bind_method(D_METHOD("is_less_than", "n"), &BigInt::is_less_than);
-	ClassDB::bind_method(D_METHOD("is_equal_to", "n"), &BigInt::is_equal_to);
-	ClassDB::bind_method(D_METHOD("is_greater_than", "n"), &BigInt::is_greater_than);
-	ClassDB::bind_method(D_METHOD("is_less_than_or_equal_to", "n"), &BigInt::is_less_than_or_equal_to);
-	ClassDB::bind_method(D_METHOD("is_greater_than_or_equal_to", "n"), &BigInt::is_greater_than_or_equal_to);
+	ClassDB::bind_method(D_METHOD("is_less_than", "n"), &BigNumber::is_less_than);
+	ClassDB::bind_method(D_METHOD("is_equal_to", "n"), &BigNumber::is_equal_to);
+	ClassDB::bind_method(D_METHOD("is_greater_than", "n"), &BigNumber::is_greater_than);
+	ClassDB::bind_method(D_METHOD("is_less_than_or_equal_to", "n"), &BigNumber::is_less_than_or_equal_to);
+	ClassDB::bind_method(D_METHOD("is_greater_than_or_equal_to", "n"), &BigNumber::is_greater_than_or_equal_to);
 
-	ClassDB::bind_method(D_METHOD("plus", "n"), &BigInt::plus);
-	ClassDB::bind_method(D_METHOD("plus_equals", "n"), &BigInt::plus_equals);
-	ClassDB::bind_method(D_METHOD("minus", "n"), &BigInt::minus);
-	ClassDB::bind_method(D_METHOD("minus_equals", "n"), &BigInt::minus_equals);
-	ClassDB::bind_method(D_METHOD("multiply", "n"), &BigInt::multiply);
-	ClassDB::bind_method(D_METHOD("multiply_equals", "n"), &BigInt::multiply_equals);
-	ClassDB::bind_method(D_METHOD("divide", "n"), &BigInt::divide);
-	ClassDB::bind_method(D_METHOD("divide_equals", "n"), &BigInt::divide_equals);
+	ClassDB::bind_method(D_METHOD("plus", "n"), &BigNumber::plus);
+	ClassDB::bind_method(D_METHOD("plus_equals", "n"), &BigNumber::plus_equals);
+	ClassDB::bind_method(D_METHOD("minus", "n"), &BigNumber::minus);
+	ClassDB::bind_method(D_METHOD("minus_equals", "n"), &BigNumber::minus_equals);
+	ClassDB::bind_method(D_METHOD("multiply", "n"), &BigNumber::multiply);
+	ClassDB::bind_method(D_METHOD("multiply_equals", "n"), &BigNumber::multiply_equals);
+	ClassDB::bind_method(D_METHOD("divide", "n"), &BigNumber::divide);
+	ClassDB::bind_method(D_METHOD("divide_equals", "n"), &BigNumber::divide_equals);
 
-	ClassDB::bind_method(D_METHOD("mod", "n"), &BigInt::mod);
-	ClassDB::bind_method(D_METHOD("power", "n"), &BigInt::power);
-	ClassDB::bind_method(D_METHOD("power_equals", "n"), &BigInt::power_equals);
-	ClassDB::bind_method(D_METHOD("square_root"), &BigInt::square_root);
-	ClassDB::bind_method(D_METHOD("absolute"), &BigInt::absolute);
-	ClassDB::bind_method(D_METHOD("log10"), &BigInt::log10);
-	ClassDB::bind_method(D_METHOD("ln"), &BigInt::ln);
-	ClassDB::bind_method(D_METHOD("floor_value"), &BigInt::floor_value);
-	ClassDB::bind_method(D_METHOD("to_float"), &BigInt::to_float);
-	ClassDB::bind_method(D_METHOD("to_plain_scientific"), &BigInt::to_plain_scientific);
+	ClassDB::bind_method(D_METHOD("mod", "n"), &BigNumber::mod);
+	ClassDB::bind_method(D_METHOD("power", "n"), &BigNumber::power);
+	ClassDB::bind_method(D_METHOD("power_equals", "n"), &BigNumber::power_equals);
+	ClassDB::bind_method(D_METHOD("square_root"), &BigNumber::square_root);
+	ClassDB::bind_method(D_METHOD("absolute"), &BigNumber::absolute);
+	ClassDB::bind_method(D_METHOD("log10"), &BigNumber::log10);
+	ClassDB::bind_method(D_METHOD("ln"), &BigNumber::ln);
+	ClassDB::bind_method(D_METHOD("floor_value"), &BigNumber::floor_value);
+	ClassDB::bind_method(D_METHOD("to_float"), &BigNumber::to_float);
+	ClassDB::bind_method(D_METHOD("to_plain_scientific"), &BigNumber::to_plain_scientific);
 }
 
 

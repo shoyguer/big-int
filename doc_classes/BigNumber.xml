@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BigInt" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="BigNumber" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A high-performance Big Number class designed for idle, incremental, and strategy games requiring massive numbers.
 	</brief_description>
 	<description>
-		[BigInt] is a [RefCounted] class designed to handle numbers efficiently that far exceed the limits of standard 64-bit integers and floating-point types.
+		[BigNumber] is a [RefCounted] class designed to handle numbers efficiently that far exceed the limits of standard 64-bit integers and floating-point types.
 
 		Internally, it uses a mantissa and exponent representation (similar to scientific notation), allowing it to store and manipulate vastly large numbers while maintaining relevant precision.
 
@@ -20,21 +20,21 @@
 	</tutorials>
 	<methods>
 		<method name="absolute" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<description>
-				Returns a new [BigInt] containing the absolute value of this number (always positive).
+				Returns a new [BigNumber] containing the absolute value of this number (always positive).
 			</description>
 		</method>
 		<method name="divide" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
-				Divides the current number by [param n] and returns the result as a new [BigInt].
-				[param n] can be a [BigInt], [float], [int], or a scientific notation [String].
+				Divides the current number by [param n] and returns the result as a new [BigNumber].
+				[param n] can be a [BigNumber], [float], [int], or a scientific notation [String].
 			</description>
 		</method>
 		<method name="divide_equals">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Divides the current number by [param n] in-place, modifying this object. Returns self to allow chaining.
@@ -107,35 +107,35 @@
 			</description>
 		</method>
 		<method name="minus" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
-				Subtracts [param n] from the current number and returns the result as a new [BigInt].
+				Subtracts [param n] from the current number and returns the result as a new [BigNumber].
 			</description>
 		</method>
 		<method name="minus_equals">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Subtracts [param n] from the current number in-place, modifying this object. Returns self.
 			</description>
 		</method>
 		<method name="mod" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Calculates the modulo (remainder) of this number divided by [param n].
 			</description>
 		</method>
 		<method name="multiply" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
-				Multiplies the current number by [param n] and returns the result as a new [BigInt].
+				Multiplies the current number by [param n] and returns the result as a new [BigNumber].
 			</description>
 		</method>
 		<method name="multiply_equals">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Multiplies the current number by [param n] in-place, modifying this object. Returns self.
@@ -148,37 +148,37 @@
 			</description>
 		</method>
 		<method name="plus" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
-				Adds [param n] to the current number and returns the result as a new [BigInt].
+				Adds [param n] to the current number and returns the result as a new [BigNumber].
 			</description>
 		</method>
 		<method name="plus_equals">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Adds [param n] to the current number in-place, modifying this object. Returns self to allow chaining.
 			</description>
 		</method>
 		<method name="power" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
-				Raises this number to the power of [param n] (exponentiation) and returns a new [BigInt].
+				Raises this number to the power of [param n] (exponentiation) and returns a new [BigNumber].
 			</description>
 		</method>
 		<method name="power_equals">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<param index="0" name="n" type="Variant" />
 			<description>
 				Raises this number to the power of [param n] in-place.
 			</description>
 		</method>
 		<method name="square_root" qualifiers="const">
-			<return type="BigInt" />
+			<return type="BigNumber" />
 			<description>
-				Returns a new [BigInt] representing the square root of this number.
+				Returns a new [BigNumber] representing the square root of this number.
 			</description>
 		</method>
 		<method name="to_aa" qualifiers="const">
@@ -196,7 +196,7 @@
 			<return type="float" />
 			<description>
 				Converts the number to a standard GDScript [float].
-				[b]Warning:[/b] Standard floats have a maximum value of roughly [code]1.79e308[/code]. If this BigInt exceeds that, the result will be [code]INF[/code].
+				[b]Warning:[/b] Standard floats have a maximum value of roughly [code]1.79e308[/code]. If this BigNumber exceeds that, the result will be [code]INF[/code].
 			</description>
 		</method>
 		<method name="to_metric_name" qualifiers="const">

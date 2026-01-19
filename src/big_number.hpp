@@ -5,21 +5,21 @@
 
 using namespace godot;
 
-class BigInt : public RefCounted {
-	GDCLASS(BigInt, RefCounted)
+class BigNumber : public RefCounted {
+	GDCLASS(BigNumber, RefCounted)
 
 public:
 	// Constants
 	static const double MANTISSA_MAX;
 	static const double MANTISSA_PRECISION;
 
-	BigInt();
-	BigInt(const String &p_string);
-	BigInt(int64_t p_int);
-	BigInt(double p_float);
-	BigInt(double p_mantissa, int64_t p_exponent);
-	BigInt(const Variant &p_val);
-	~BigInt();
+	BigNumber();
+	BigNumber(const String &p_string);
+	BigNumber(int64_t p_int);
+	BigNumber(double p_float);
+	BigNumber(double p_mantissa, int64_t p_exponent);
+	BigNumber(const Variant &p_val);
+	~BigNumber();
 
 	void set_mantissa(double p_mantissa);
 	double get_mantissa() const;
@@ -35,20 +35,20 @@ public:
 	bool is_less_than_or_equal_to(const Variant &n) const;
 	bool is_greater_than_or_equal_to(const Variant &n) const;
 
-	Ref<BigInt> plus(const Variant &n) const;
-	Ref<BigInt> plus_equals(const Variant &n);
-	Ref<BigInt> minus(const Variant &n) const;
-	Ref<BigInt> minus_equals(const Variant &n);
-	Ref<BigInt> multiply(const Variant &n) const;
-	Ref<BigInt> multiply_equals(const Variant &n);
-	Ref<BigInt> divide(const Variant &n) const;
-	Ref<BigInt> divide_equals(const Variant &n);
+	Ref<BigNumber> plus(const Variant &n) const;
+	Ref<BigNumber> plus_equals(const Variant &n);
+	Ref<BigNumber> minus(const Variant &n) const;
+	Ref<BigNumber> minus_equals(const Variant &n);
+	Ref<BigNumber> multiply(const Variant &n) const;
+	Ref<BigNumber> multiply_equals(const Variant &n);
+	Ref<BigNumber> divide(const Variant &n) const;
+	Ref<BigNumber> divide_equals(const Variant &n);
 
-	Ref<BigInt> mod(const Variant &n) const;
-	Ref<BigInt> power(const Variant &n) const;
-	Ref<BigInt> power_equals(const Variant &n);
-	Ref<BigInt> square_root() const;
-	Ref<BigInt> absolute() const;
+	Ref<BigNumber> mod(const Variant &n) const;
+	Ref<BigNumber> power(const Variant &n) const;
+	Ref<BigNumber> power_equals(const Variant &n);
+	Ref<BigNumber> square_root() const;
+	Ref<BigNumber> absolute() const;
 
 	double log10() const;
 	double ln() const;
@@ -72,7 +72,7 @@ protected:
 	static void _bind_methods();
 
 private:
-	static Ref<BigInt> _type_check(const Variant &n);
+	static Ref<BigNumber> _type_check(const Variant &n);
 	static void _size_check(double p_mantissa);
 	static void _get_values(const Variant &n, double &r_mantissa, int64_t &r_exponent);
 
