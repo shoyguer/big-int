@@ -4,7 +4,9 @@ func _ready() -> void:
 	test_plugin_functionality()
 
 func test_plugin_functionality()->void:
-	var my_res:ItemData = ItemData.new()
+	var my_res: ItemData = ItemData.new()
+	
+	var big_int: BigInt = BigInt.new()
 	
 	print(my_res.name)
 	my_res.name = "Sword"

@@ -1,7 +1,8 @@
-// Include your classes, that you want to expose to Godot
-#include "item_data.hpp"
-#include "big_int.hpp"
+// MIT License
+// Copyright (c) 2025 Lucas "Shoyguer" Melo
 
+// Include your classes, that you want to expose to Godot
+#include "stat_pool.hpp"
 #include <gdextension_interface.h>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
@@ -16,8 +17,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	}
 
 	// Register your classes here, so they are available in the Godot editor and engine
-	GDREGISTER_CLASS(ItemData)
-	GDREGISTER_CLASS(BigInt)
+	GDREGISTER_CLASS(StatPool);
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
@@ -29,7 +29,7 @@ void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
 extern "C"
 {
 	// Initialization
-	GDExtensionBool GDE_EXPORT big_int_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization)
+	GDExtensionBool GDE_EXPORT stat_pool_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization)
 	{
 		GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 		init_obj.register_initializer(initialize_gdextension_types);

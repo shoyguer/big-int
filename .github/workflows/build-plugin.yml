@@ -53,7 +53,7 @@ on:
         default: false
 
 env:
-  PLUGIN_NAME: "plugin_name" # Replace with your plugin name (must match .gdextension file name)
+  PLUGIN_NAME: "big_int" # Replace with your plugin name (must match .gdextension file name)
 
 jobs:
   set-matrix:

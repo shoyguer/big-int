@@ -24,7 +24,7 @@ def find_sources(dirs, exts):
     return sources
 
 # Configuration
-libname = "plugin_name"
+libname = "big_int"
 projectdir = "test_project"
 
 # Set up the environment
