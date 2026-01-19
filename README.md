@@ -24,7 +24,7 @@ This is a GDExtension plugin, built with performance in mind.
 | **Others** | 🌐 Web |
 
 ## Requirements
-- [Godot 4.3+](https://godotengine.org/)
+- [Godot 4.5](https://godotengine.org/)
 
 ## Building From Source
 Only needed if you want to modify the plugin.
@@ -46,43 +46,13 @@ your_project_folder/
 (Since it is a GDExtension plugin, you don't need to activate it through Project Settings. Just restart the editor if classes don't appear immediately.)
 
 ## How to use BigNumber
-Initialize a BigNumber from various types:
-```gdscript
-var num1 = BigNumber.new(100)           # From int
-var num2 = BigNumber.new(123.456)       # From float
-var num3 = BigNumber.new("1.5e20")      # From String (scientific)
-var num4 = BigNumber.new(1.5, 20)       # From mantissa and exponent (1.5 * 10^20)
-```
+Check the [Wiki](https://github.com/shoyguer/seed/wiki) for information on how to use this plugin.
 
-Perform arithmetic:
-```gdscript
-# Operations return a NEW BigNumber (immutable-style)
-var sum = num1.plus(num2)
-var diff = num3.minus(num4)
-var prod = num1.multiply(num2)
-var quot = num3.divide(num4)
+Or jump to whatever you need:
 
-# In-place operations (modifies the object)
-num1.plus_equals(50)
-num1.multiply_equals(BigNumber.new("1e5"))
-```
-
-Comparisons:
-```gdscript
-if num1.is_greater_than(num2):
-    print("Num1 is bigger!")
-    
-if num3.is_equal_to(num4):
-    print("They are equal")
-```
-
-Formatting:
-```gdscript
-print(num3.to_scientific())     # "1.50e20"
-print(num3.to_aa())             # AA notation (e.g. "1.50 aa")
-print(num3.to_metric_symbol())  # Metric (e.g. "150 E")
-print(num3.to_metric_name())    # Full name (e.g. "150 exa")
-```
+#### Wiki
+- [Class Reference](https://github.com/shoyguer/seed/wiki/1.-Class-Reference)
+- [Code Examples](https://github.com/shoyguer/seed/wiki/2.1.-GDScript-Code-Example)
 
 ## Other Plugins
 Check out my other Godot plugins:

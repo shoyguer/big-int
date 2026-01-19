@@ -2,6 +2,9 @@
 entry_symbol = "big_number_init"
 compatibility_minimum = "4.5"
 
+[icons]
+BigNumber = "./big_number.svg"
+
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
 macos.debug = "./bin/macos/libbig_number.macos.template_debug.single.framework"
