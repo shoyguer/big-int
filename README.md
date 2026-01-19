@@ -7,7 +7,7 @@ This plugin was built upon ChronoDk's [GodotBigNumberClass](https://github.com/C
 Though my version uses GDExtension instead, which is more optimized.
 
 Check the comparison below:
-![Testing Results](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/comparison.png)
+![Testing Results](https://raw.githubusercontent.com/shoyguer/big-int/refs/heads/main/brand/benchmark.png)
 
 ## Why Use BigNumber?
 Managing massive numbers in games can be performance-heavy and complex. This plugin provides you with:

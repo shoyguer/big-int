@@ -37,7 +37,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "BigInt Benchmark Results (BigNumber C++ vs Big GDScript)"
+text = "Benchmark Results: BigNumber vs Big"
 horizontal_alignment = 1
 
 [node name="Title2" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
