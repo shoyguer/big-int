@@ -100,6 +100,55 @@ void BigInt::normalize() {
 	if (is_negative) {
 		mantissa = -mantissa;
 	}
+
+	if (mantissa >= 10.0 || mantissa < 1.0) {
+		double log_val = Math::log(mantissa) / Math::log(10.0);
+		int64_t exp_change = (int64_t)Math::floor(log_val);
+
+		exponent += exp_change;
+		mantissa /= Math::pow(10.0, (double)exp_change);
+	}
+}
+
+void BigInt::_get_values(const Variant &n, double &r_mantissa, int64_t &r_exponent) {
+	if (n.get_type() == Variant::INT) {
+		r_mantissa = (double)(int64_t)n;
+		r_exponent = 0;
+	} else if (n.get_type() == Variant::FLOAT) {
+		r_mantissa = (double)n;
+		r_exponent = 0;
+	} else if (n.get_type() == Variant::OBJECT) {
+		Ref<BigInt> b = n;
+		if (b.is_valid()) {
+			r_mantissa = b->get_mantissa();
+			r_exponent = b->get_exponent();
+			return;
+		}
+		// Invalid object, fall through to fallback
+	} else {
+		// Fallback/String/Other
+		Ref<BigInt> temp = memnew(BigInt(n));
+		r_mantissa = temp->get_mantissa();
+		r_exponent = temp->get_exponent();
+		return;
+	}
+
+	// Normalize r_mantissa/r_exponent for INT/FLOAT types
+	if (r_mantissa == 0.0) {
+		r_exponent = 0;
+		return;
+	}
+	if (r_mantissa < 0.0) {
+		r_mantissa = -r_mantissa;
+	}
+
+	if (r_mantissa >= 10.0 || r_mantissa < 1.0) {
+		double log_val = Math::log(r_mantissa) / Math::log(10.0);
+		int64_t exp_change = (int64_t)Math::floor(log_val);
+
+		r_exponent += exp_change;
+		r_mantissa /= Math::pow(10.0, (double)exp_change);
+	}
 }
 
 Ref<BigInt> BigInt::_type_check(const Variant &n) {
@@ -119,21 +168,23 @@ void BigInt::_size_check(double p_mantissa) {
 }
 
 bool BigInt::is_less_than(const Variant &n) const {
-	Ref<BigInt> other = _type_check(n);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
 	
 	if (mantissa == 0.0) {
-		return other->mantissa > 0.0; // 0 < 0 is false
+		return other_mantissa > 0.0; // 0 < 0 is false
 	}
 	
-	if (exponent < other->exponent) {
-		if (exponent == other->exponent - 1 && mantissa > 10.0 * other->mantissa) {
+	if (exponent < other_exponent) {
+		if (exponent == other_exponent - 1 && mantissa > 10.0 * other_mantissa) {
 			return false;
 		}
 		return true;
-	} else if (exponent == other->exponent) {
-		return mantissa < other->mantissa;
+	} else if (exponent == other_exponent) {
+		return mantissa < other_mantissa;
 	} else {
-		if (exponent == other->exponent + 1 && mantissa * 10.0 < other->mantissa) {
+		if (exponent == other_exponent + 1 && mantissa * 10.0 < other_mantissa) {
 			return true;
 		}
 		return false;
@@ -141,8 +192,10 @@ bool BigInt::is_less_than(const Variant &n) const {
 }
 
 bool BigInt::is_equal_to(const Variant &n) const {
-	Ref<BigInt> other = _type_check(n);
-	return other->exponent == exponent && Math::is_equal_approx(other->mantissa, mantissa);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
+	return other_exponent == exponent && Math::is_equal_approx(other_mantissa, mantissa);
 }
 
 bool BigInt::is_greater_than(const Variant &n) const {
@@ -171,25 +224,27 @@ Ref<BigInt> BigInt::plus(const Variant &n) const {
 }
 
 Ref<BigInt> BigInt::plus_equals(const Variant &n) {
-	Ref<BigInt> other = _type_check(n);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
 	
-	int64_t exp_diff = other->exponent - exponent;
+	int64_t exp_diff = other_exponent - exponent;
 	
 	if (exp_diff == 0) {
-		mantissa += other->mantissa;
+		mantissa += other_mantissa;
 	} else if (exp_diff > 0) {
 		if (exp_diff >= 248) {
-			mantissa = other->mantissa;
-			exponent = other->exponent;
+			mantissa = other_mantissa;
+			exponent = other_exponent;
 		} else {
-			double scaled_mantissa = other->mantissa * Math::pow(10.0, (double)exp_diff);
+			double scaled_mantissa = other_mantissa * Math::pow(10.0, (double)exp_diff);
 			mantissa += scaled_mantissa;
 		}
 	} else {
 		if (-exp_diff >= 248) {
 			// Other too small
 		} else {
-			double scaled_mantissa = other->mantissa / Math::pow(10.0, (double)(-exp_diff));
+			double scaled_mantissa = other_mantissa / Math::pow(10.0, (double)(-exp_diff));
 			mantissa += scaled_mantissa;
 		}
 	}
@@ -205,10 +260,11 @@ Ref<BigInt> BigInt::minus(const Variant &n) const {
 }
 
 Ref<BigInt> BigInt::minus_equals(const Variant &n) {
-	Ref<BigInt> other = _type_check(n);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
 	
-	double other_mantissa_neg = -other->mantissa;
-	int64_t other_exponent = other->exponent;
+	double other_mantissa_neg = -other_mantissa;
 	
 	int64_t exp_diff = other_exponent - exponent;
 	
@@ -240,10 +296,12 @@ Ref<BigInt> BigInt::multiply(const Variant &n) const {
 }
 
 Ref<BigInt> BigInt::multiply_equals(const Variant &n) {
-	Ref<BigInt> other = _type_check(n);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
 	
-	exponent += other->exponent;
-	mantissa *= other->mantissa;
+	exponent += other_exponent;
+	mantissa *= other_mantissa;
 	
 	normalize();
 	return Ref<BigInt>(this);
@@ -256,15 +314,17 @@ Ref<BigInt> BigInt::divide(const Variant &n) const {
 }
 
 Ref<BigInt> BigInt::divide_equals(const Variant &n) {
-	Ref<BigInt> other = _type_check(n);
+	double other_mantissa;
+	int64_t other_exponent;
+	_get_values(n, other_mantissa, other_exponent);
 	
-	if (other->mantissa == 0.0) {
+	if (other_mantissa == 0.0) {
 		ERR_PRINT("BigInt Error: Divide by zero");
 		return Ref<BigInt>(this);
 	}
 	
-	exponent -= other->exponent;
-	mantissa /= other->mantissa;
+	exponent -= other_exponent;
+	mantissa /= other_mantissa;
 	
 	normalize();
 	return Ref<BigInt>(this);
@@ -397,8 +457,30 @@ double BigInt::to_float() const {
 	return mantissa * Math::pow(10.0, (double)exponent);
 }
 
+String BigInt::to_plain_scientific() const {
+	return String::num(mantissa) + "e" + String::num_int64(exponent);
+}
+
 String BigInt::_to_string() const {
-	return String::num_scientific(mantissa) + "e" + String::num_int64(exponent);
+	String m_str = String::num(mantissa);
+	int mantissa_decimals = 0;
+	if (m_str.find(".") >= 0) {
+		mantissa_decimals = m_str.split(".")[1].length();
+	}
+
+	if (mantissa_decimals > exponent) {
+		if (exponent < 248) {
+			return String::num(mantissa * Math::pow(10.0, (double)exponent));
+		} else {
+			return to_plain_scientific();
+		}
+	} else {
+		String mantissa_string = m_str.replace(".", "");
+		for (int i = 0; i < (exponent - mantissa_decimals); i++) {
+			mantissa_string += "0";
+		}
+		return mantissa_string;
+	}
 }
 
 Dictionary BigInt::get_options() {
@@ -424,11 +506,16 @@ Dictionary BigInt::get_options() {
 }
 
 String BigInt::to_scientific(bool no_decimals_on_small_values, bool force_decimals) const {
+	static const StringName sn_scientific_decimals("scientific_decimals");
+	static const StringName sn_dynamic_decimals("dynamic_decimals");
+	static const StringName sn_dynamic_numbers("dynamic_numbers");
+	static const StringName sn_decimal_separator("decimal_separator");
+
 	Dictionary opts = get_options();
-	int scientific_decimals = opts["scientific_decimals"];
-	bool dynamic_decimals = opts["dynamic_decimals"];
-	int dynamic_numbers = opts["dynamic_numbers"];
-	String decimal_separator = opts["decimal_separator"];
+	int scientific_decimals = opts[sn_scientific_decimals];
+	bool dynamic_decimals = opts[sn_dynamic_decimals];
+	int dynamic_numbers = opts[sn_dynamic_numbers];
+	String decimal_separator = opts[sn_decimal_separator];
 	
 	if (exponent < 3) {
 		double decimal_increments = 1.0 / (Math::pow(10.0, scientific_decimals) / 10.0);
@@ -472,14 +559,22 @@ String BigInt::to_scientific(bool no_decimals_on_small_values, bool force_decima
 }
 
 String BigInt::to_prefix(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals, bool scientific_prefix) const {
+	static const StringName sn_small_decimals("small_decimals");
+	static const StringName sn_thousand_decimals("thousand_decimals");
+	static const StringName sn_big_decimals("big_decimals");
+	static const StringName sn_dynamic_decimals("dynamic_decimals");
+	static const StringName sn_dynamic_numbers("dynamic_numbers");
+	static const StringName sn_decimal_separator("decimal_separator");
+	static const StringName sn_thousand_separator("thousand_separator");
+
 	Dictionary opts = get_options();
-	int small_decimals = opts["small_decimals"];
-	int thousand_decimals = opts["thousand_decimals"];
-	int big_decimals = opts["big_decimals"];
-	bool dynamic_decimals = opts["dynamic_decimals"];
-	int dynamic_numbers = opts["dynamic_numbers"];
-	String decimal_separator = opts["decimal_separator"];
-	String thousand_separator = opts["thousand_separator"];
+	int small_decimals = opts[sn_small_decimals];
+	int thousand_decimals = opts[sn_thousand_decimals];
+	int big_decimals = opts[sn_big_decimals];
+	bool dynamic_decimals = opts[sn_dynamic_decimals];
+	int dynamic_numbers = opts[sn_dynamic_numbers];
+	String decimal_separator = opts[sn_decimal_separator];
+	String thousand_separator = opts[sn_thousand_separator];
 	
 	double number = mantissa;
 	if (!scientific_prefix) {
@@ -488,7 +583,7 @@ String BigInt::to_prefix(bool no_decimals_on_small_values, bool use_thousand_sym
 		number *= hundreds;
 	}
 	
-	String s_num = String::num(number, 10); 
+	String s_num = String::num(number); 
 	PackedStringArray split = s_num.split(".");
 	if (split.size() == 1) split.append("");
 	
@@ -535,8 +630,9 @@ String BigInt::to_aa(bool no_decimals_on_small_values, bool use_thousand_symbol,
 		suffixes_aa["4"] = "t";
 	}
 
+	static const StringName sn_suffix_separator("suffix_separator");
 	Dictionary opts = get_options();
-	String suffix_separator = opts["suffix_separator"];
+	String suffix_separator = opts[sn_suffix_separator];
 	
 	int64_t target = exponent / 3;
 	String aa_index = String::num_int64(target);
@@ -586,7 +682,8 @@ String BigInt::to_metric_symbol(bool no_decimals_on_small_values) const {
 		suffixes_metric_symbol["10"] = "Q";
 	}
 	Dictionary opts = get_options();
-	String suffix_separator = opts["suffix_separator"];
+	static const StringName sn_suffix_separator("suffix_separator");
+	String suffix_separator = opts[sn_suffix_separator];
 
 	int64_t target = exponent / 3;
 	String t_str = String::num_int64(target);
@@ -614,7 +711,8 @@ String BigInt::to_metric_name(bool no_decimals_on_small_values) const {
 		suffixes_metric_name["10"] = "quetta";
 	}
 	Dictionary opts = get_options();
-	String suffix_separator = opts["suffix_separator"];
+	static const StringName sn_suffix_separator("suffix_separator");
+	String suffix_separator = opts[sn_suffix_separator];
 
 	int64_t target = exponent / 3;
 	String t_str = String::num_int64(target);
@@ -668,6 +766,7 @@ void BigInt::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("ln"), &BigInt::ln);
 	ClassDB::bind_method(D_METHOD("floor_value"), &BigInt::floor_value);
 	ClassDB::bind_method(D_METHOD("to_float"), &BigInt::to_float);
+	ClassDB::bind_method(D_METHOD("to_plain_scientific"), &BigInt::to_plain_scientific);
 }
 
 

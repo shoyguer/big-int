@@ -1,13 +1,18 @@
 extends Control
+## Benchmark script for comparing BigInt implementations.
+##
+## Compares the performance of the new C++ GDExtension BigInt,
+## the previous GDScript GDBigInt, and another pure GDScript Big implementation.
 
-const Big = preload("res://big.gd")
-const GDBigInt = preload("res://gd_big_int.gd")
-const ITERATIONS = 100000
+
+## Number of iterations for each benchmark test.
+const ITERATIONS: int = 100000
+
 
 func _ready() -> void:
 	# Add a small delay to let the UI draw first so we don't freeze immediately on startup
 	await get_tree().create_timer(0.1).timeout
-	
+
 	benchmark_instantiation()
 	await get_tree().process_frame
 	benchmark_addition()
@@ -26,7 +31,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	benchmark_comparison()
 	await get_tree().process_frame
-	
+
 	benchmark_formatting_scientific()
 	await get_tree().process_frame
 	benchmark_formatting_prefix()
@@ -36,26 +41,42 @@ func _ready() -> void:
 	benchmark_formatting_metric_symbol()
 	await get_tree().process_frame
 	benchmark_formatting_metric_name()
+	await get_tree().process_frame
+	benchmark_is_equal()
+	await get_tree().process_frame
+	benchmark_absolute()
+	await get_tree().process_frame
+	benchmark_log10()
+	await get_tree().process_frame
+	benchmark_ln()
+	await get_tree().process_frame
+	benchmark_floor()
+	await get_tree().process_frame
+	benchmark_to_float()
+	await get_tree().process_frame
+	benchmark_formatting_plain()
 
+
+## Updates the UI with the benchmark results.
 func update_ui_row(prefix: String, time_cpp: int, time_old: int, time_new: int) -> void:
-	var lbl_cpp = get_node("%" + "Res_" + prefix + "_CPP") as Label
-	var lbl_old = get_node("%" + "Res_" + prefix + "_Old") as Label
-	var lbl_new = get_node("%" + "Res_" + prefix + "_New") as Label
-	var lbl_ratio_old = get_node("%" + "Res_" + prefix + "_RatioOld") as Label
-	var lbl_ratio_new = get_node("%" + "Res_" + prefix + "_RatioNew") as Label
-	
+	var lbl_cpp: Label = get_node("%" + "Res_" + prefix + "_CPP") as Label
+	var lbl_old: Label = get_node("%" + "Res_" + prefix + "_Old") as Label
+	var lbl_new: Label = get_node("%" + "Res_" + prefix + "_New") as Label
+	var lbl_ratio_old: Label = get_node("%" + "Res_" + prefix + "_RatioOld") as Label
+	var lbl_ratio_new: Label = get_node("%" + "Res_" + prefix + "_RatioNew") as Label
+
 	if lbl_cpp:
-		lbl_cpp.text = "%d us (%.2f ms)" % [time_cpp, time_cpp / 1000.0]
-	
+		lbl_cpp.text = "%.2f ms" % [time_cpp / 1000.0]
+
 	if lbl_old:
-		lbl_old.text = "%d us (%.2f ms)" % [time_old, time_old / 1000.0]
-		
+		lbl_old.text = "%.2f ms" % [time_old / 1000.0]
+
 	if lbl_new:
-		lbl_new.text = "%d us (%.2f ms)" % [time_new, time_new / 1000.0]
-	
+		lbl_new.text = "%.2f ms" % [time_new / 1000.0]
+
 	if lbl_ratio_old:
 		if time_cpp > 0:
-			var ratio = float(time_old) / float(time_cpp)
+			var ratio: float = float(time_old) / float(time_cpp)
 			lbl_ratio_old.text = "%.2fx" % ratio
 			if ratio > 1.0:
 				lbl_ratio_old.add_theme_color_override("font_color", Color.GREEN)
@@ -66,7 +87,7 @@ func update_ui_row(prefix: String, time_cpp: int, time_old: int, time_new: int) 
 
 	if lbl_ratio_new:
 		if time_cpp > 0:
-			var ratio = float(time_new) / float(time_cpp)
+			var ratio: float = float(time_new) / float(time_cpp)
 			lbl_ratio_new.text = "%.2fx" % ratio
 			if ratio > 1.0:
 				lbl_ratio_new.add_theme_color_override("font_color", Color.GREEN)
@@ -75,382 +96,605 @@ func update_ui_row(prefix: String, time_cpp: int, time_old: int, time_new: int) 
 		else:
 			lbl_ratio_new.text = "Inf"
 
+
+## Benchmarks instantiation performance.
 func benchmark_instantiation() -> void:
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _b = BigInt.new()
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _b: BigInt = BigInt.new()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _b = GDBigInt.new()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _b: GDBigInt = GDBigInt.new()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _b = Big.new()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _b: Big = Big.new()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Inst", time_cpp, time_old, time_new)
 
+
+## Benchmarks addition performance.
 func benchmark_addition() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.0
 	a_cpp.exponent = 50
-	var b_cpp = BigInt.new()
+	var b_cpp: BigInt = BigInt.new()
 	b_cpp.mantissa = 5.0
 	b_cpp.exponent = 40
-	
-	var a_old = GDBigInt.new(1.0, 50)
-	var b_old = GDBigInt.new(5.0, 40)
-	
-	var a_new = Big.new(1.0, 50)
-	var b_new = Big.new(5.0, 40)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.plus(b_cpp)
+
+	var a_old: GDBigInt = GDBigInt.new(1.0, 50)
+	var b_old: GDBigInt = GDBigInt.new(5.0, 40)
+
+	var a_new: Big = Big.new(1.0, 50)
+	var b_new: Big = Big.new(5.0, 40)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.plus(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.plus(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.plus(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.add(a_new, b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.add(a_new, b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Add", time_cpp, time_old, time_new)
 
+
+## Benchmarks subtraction performance.
 func benchmark_subtraction() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.0
 	a_cpp.exponent = 50
-	var b_cpp = BigInt.new()
+	var b_cpp: BigInt = BigInt.new()
 	b_cpp.mantissa = 5.0
 	b_cpp.exponent = 40
-	
-	var a_old = GDBigInt.new(1.0, 50)
-	var b_old = GDBigInt.new(5.0, 40)
-	
-	var a_new = Big.new(1.0, 50)
-	var b_new = Big.new(5.0, 40)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.minus(b_cpp)
+
+	var a_old: GDBigInt = GDBigInt.new(1.0, 50)
+	var b_old: GDBigInt = GDBigInt.new(5.0, 40)
+
+	var a_new: Big = Big.new(1.0, 50)
+	var b_new: Big = Big.new(5.0, 40)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.minus(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.minus(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.minus(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.subtract(a_new, b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.subtract(a_new, b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Sub", time_cpp, time_old, time_new)
 
+
+## Benchmarks multiplication performance.
 func benchmark_multiplication() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.5
 	a_cpp.exponent = 10
-	var b_cpp = BigInt.new()
+	var b_cpp: BigInt = BigInt.new()
 	b_cpp.mantissa = 2.0
 	b_cpp.exponent = 5
-	
-	var a_old = GDBigInt.new(1.5, 10)
-	var b_old = GDBigInt.new(2.0, 5)
-	
-	var a_new = Big.new(1.5, 10)
-	var b_new = Big.new(2.0, 5)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.multiply(b_cpp)
+
+	var a_old: GDBigInt = GDBigInt.new(1.5, 10)
+	var b_old: GDBigInt = GDBigInt.new(2.0, 5)
+
+	var a_new: Big = Big.new(1.5, 10)
+	var b_new: Big = Big.new(2.0, 5)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.multiply(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.multiply(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.multiply(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.times(a_new, b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.times(a_new, b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Mul", time_cpp, time_old, time_new)
 
+
+## Benchmarks division performance.
 func benchmark_division() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 8.0
 	a_cpp.exponent = 20
-	var b_cpp = BigInt.new()
+	var b_cpp: BigInt = BigInt.new()
 	b_cpp.mantissa = 2.0
 	b_cpp.exponent = 5
 
-	var a_old = GDBigInt.new(8.0, 20)
-	var b_old = GDBigInt.new(2.0, 5)
-	
-	var a_new = Big.new(8.0, 20)
-	var b_new = Big.new(2.0, 5)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.divide(b_cpp)
+	var a_old: GDBigInt = GDBigInt.new(8.0, 20)
+	var b_old: GDBigInt = GDBigInt.new(2.0, 5)
+
+	var a_new: Big = Big.new(8.0, 20)
+	var b_new: Big = Big.new(2.0, 5)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.divide(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.divide(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.divide(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.division(a_new, b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.division(a_new, b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Div", time_cpp, time_old, time_new)
 
+
+## Benchmarks modulo performance.
 func benchmark_modulo() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 5.0
 	a_cpp.exponent = 1
-	var b_cpp = 4.0
-	
-	var a_old = GDBigInt.new(5.0, 1)
-	var b_old = 4.0
+	var b_cpp: float = 4.0
 
-	var a_new = Big.new(5.0, 1)
-	var b_new = 4.0
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.mod(b_cpp)
+	var a_old: GDBigInt = GDBigInt.new(5.0, 1)
+	var b_old: float = 4.0
+
+	var a_new: Big = Big.new(5.0, 1)
+	var b_new: float = 4.0
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.mod(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.mod(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.mod(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.modulo(a_new, b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.modulo(a_new, b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Mod", time_cpp, time_old, time_new)
 
+
+## Benchmarks power performance.
 func benchmark_power() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 2.0
 	a_cpp.exponent = 3
-	var p = 5
-	
-	var a_old = GDBigInt.new(2.0, 3)
-	
-	var a_new = Big.new(2.0, 3)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.power(p)
+	var p: int = 5
+
+	var a_old: GDBigInt = GDBigInt.new(2.0, 3)
+
+	var a_new: Big = Big.new(2.0, 3)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.power(p)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.power(p)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.power(p)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.powers(a_new, p)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.powers(a_new, p)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Pow", time_cpp, time_old, time_new)
 
+
+## Benchmarks square root performance.
 func benchmark_sqrt() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 9.0
 	a_cpp.exponent = 10
-	
-	var a_old = GDBigInt.new(9.0, 10)
 
-	var a_new = Big.new(9.0, 10)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.square_root()
+	var a_old: GDBigInt = GDBigInt.new(9.0, 10)
+
+	var a_new: Big = Big.new(9.0, 10)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.square_root()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.square_root()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.square_root()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = Big.root(a_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.root(a_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Sqrt", time_cpp, time_old, time_new)
 
+
+## Benchmarks comparison performance.
 func benchmark_comparison() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.0
 	a_cpp.exponent = 50
-	var b_cpp = BigInt.new()
+	var b_cpp: BigInt = BigInt.new()
 	b_cpp.mantissa = 5.0
 	b_cpp.exponent = 50
-	
-	var a_old = GDBigInt.new(1.0, 50)
-	var b_old = GDBigInt.new(5.0, 50)
 
-	var a_new = Big.new(1.0, 50)
-	var b_new = Big.new(5.0, 50)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_cpp.is_less_than(b_cpp)
+	var a_old: GDBigInt = GDBigInt.new(1.0, 50)
+	var b_old: GDBigInt = GDBigInt.new(5.0, 50)
+
+	var a_new: Big = Big.new(1.0, 50)
+	var b_new: Big = Big.new(5.0, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_cpp.is_less_than(b_cpp)
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_old.is_less_than(b_old)
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_old.is_less_than(b_old)
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _c = a_new.isLessThan(b_new)
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_new.isLessThan(b_new)
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("Comp", time_cpp, time_old, time_new)
 
+
+## Benchmarks scientific formatting performance.
 func benchmark_formatting_scientific() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.23456
 	a_cpp.exponent = 50
-	
-	var a_old = GDBigInt.new(1.23456, 50)
-	var a_new = Big.new(1.23456, 50)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_cpp.to_scientific()
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 50)
+	var a_new: Big = Big.new(1.23456, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_scientific()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_old.to_scientific()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_scientific()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_new.toScientific()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toScientific()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("FmtSci", time_cpp, time_old, time_new)
 
+
+## Benchmarks prefix formatting performance.
 func benchmark_formatting_prefix() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.23456
 	a_cpp.exponent = 50
-	
-	var a_old = GDBigInt.new(1.23456, 50)
-	var a_new = Big.new(1.23456, 50)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_cpp.to_prefix()
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 50)
+	var a_new: Big = Big.new(1.23456, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_prefix()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_old.to_prefix()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_prefix()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_new.toPrefix()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toPrefix()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("FmtPre", time_cpp, time_old, time_new)
 
+
+## Benchmarks AA formatting performance.
 func benchmark_formatting_aa() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.23456
 	a_cpp.exponent = 50
-	
-	var a_old = GDBigInt.new(1.23456, 50)
-	var a_new = Big.new(1.23456, 50)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_cpp.to_aa()
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 50)
+	var a_new: Big = Big.new(1.23456, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_aa()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_old.to_aa()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_aa()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_new.toAA()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toAA()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("FmtAA", time_cpp, time_old, time_new)
 
+
+## Benchmarks metric symbol formatting performance.
 func benchmark_formatting_metric_symbol() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.23456
 	a_cpp.exponent = 12
-	
-	var a_old = GDBigInt.new(1.23456, 12)
-	var a_new = Big.new(1.23456, 12)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_cpp.to_metric_symbol()
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 12)
+	var a_new: Big = Big.new(1.23456, 12)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_metric_symbol()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_old.to_metric_symbol()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_metric_symbol()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_new.toMetricSymbol()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toMetricSymbol()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("FmtSym", time_cpp, time_old, time_new)
 
+
+## Benchmarks metric name formatting performance.
 func benchmark_formatting_metric_name() -> void:
-	var a_cpp = BigInt.new()
+	var a_cpp: BigInt = BigInt.new()
 	a_cpp.mantissa = 1.23456
 	a_cpp.exponent = 12
-	
-	var a_old = GDBigInt.new(1.23456, 12)
-	var a_new = Big.new(1.23456, 12)
-	
-	var time_cpp = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_cpp.to_metric_name()
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 12)
+	var a_new: Big = Big.new(1.23456, 12)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_metric_name()
 	time_cpp = Time.get_ticks_usec() - time_cpp
-	
-	var time_old = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_old.to_metric_name()
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_metric_name()
 	time_old = Time.get_ticks_usec() - time_old
 
-	var time_new = Time.get_ticks_usec()
-	for i in range(ITERATIONS):
-		var _s = a_new.toMetricName()
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toMetricName()
 	time_new = Time.get_ticks_usec() - time_new
-	
+
 	update_ui_row("FmtNam", time_cpp, time_old, time_new)
+
+
+## Benchmarks equality check performance.
+func benchmark_is_equal() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.0
+	a_cpp.exponent = 50
+	var b_cpp: BigInt = BigInt.new()
+	b_cpp.mantissa = 1.0
+	b_cpp.exponent = 50
+
+	var a_old: GDBigInt = GDBigInt.new(1.0, 50)
+	var b_old: GDBigInt = GDBigInt.new(1.0, 50)
+
+	var a_new: Big = Big.new(1.0, 50)
+	var b_new: Big = Big.new(1.0, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_cpp.is_equal_to(b_cpp)
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_old.is_equal_to(b_old)
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: bool = a_new.isEqualTo(b_new)
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("IsEq", time_cpp, time_old, time_new)
+
+
+## Benchmarks absolute value performance.
+func benchmark_absolute() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = -1.5
+	a_cpp.exponent = 10
+
+	var a_old: GDBigInt = GDBigInt.new(-1.5, 10)
+	var a_new: Big = Big.new(-1.5, 10)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: BigInt = a_cpp.absolute()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: GDBigInt = a_old.absolute()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: Big = Big.absolute(a_new)
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("Abs", time_cpp, time_old, time_new)
+
+
+## Benchmarks log10 calculation performance.
+func benchmark_log10() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.5
+	a_cpp.exponent = 10
+
+	var a_old: GDBigInt = GDBigInt.new(1.5, 10)
+	var a_new: Big = Big.new(1.5, 10)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_cpp.log10()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_old.log10()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_new.absLog10()
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("Log10", time_cpp, time_old, time_new)
+
+
+## Benchmarks natural logarithm performance.
+func benchmark_ln() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.5
+	a_cpp.exponent = 10
+
+	var a_old: GDBigInt = GDBigInt.new(1.5, 10)
+	var a_new: Big = Big.new(1.5, 10)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_cpp.ln()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_old.ln()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_new.ln()
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("Ln", time_cpp, time_old, time_new)
+
+
+## Benchmarks floor value performance.
+func benchmark_floor() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.5
+	a_cpp.exponent = 0
+
+	var a_old: GDBigInt = GDBigInt.new(1.5, 0)
+	var a_new: Big = Big.new(1.5, 0)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		a_cpp.floor_value()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		a_old.floor_value()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		Big.roundDown(a_new)
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("Floor", time_cpp, time_old, time_new)
+
+
+## Benchmarks conversion to float performance.
+func benchmark_to_float() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.5
+	a_cpp.exponent = 10
+
+	var a_old: GDBigInt = GDBigInt.new(1.5, 10)
+	var a_new: Big = Big.new(1.5, 10)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_cpp.to_float()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_old.to_float()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _c: float = a_new.toFloat()
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("ToFloat", time_cpp, time_old, time_new)
+
+
+## Benchmarks plain scientific formatting performance.
+func benchmark_formatting_plain() -> void:
+	var a_cpp: BigInt = BigInt.new()
+	a_cpp.mantissa = 1.23456
+	a_cpp.exponent = 50
+
+	var a_old: GDBigInt = GDBigInt.new(1.23456, 50)
+	var a_new: Big = Big.new(1.23456, 50)
+
+	var time_cpp: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_cpp.to_plain_scientific()
+	time_cpp = Time.get_ticks_usec() - time_cpp
+
+	var time_old: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_old.to_plain_scientific()
+	time_old = Time.get_ticks_usec() - time_old
+
+	var time_new: int = Time.get_ticks_usec()
+	for i: int in range(ITERATIONS):
+		var _s: String = a_new.toPlainScientific()
+	time_new = Time.get_ticks_usec() - time_new
+
+	update_ui_row("FmtPlain", time_cpp, time_old, time_new)

@@ -54,6 +54,7 @@ public:
 	double ln() const;
 	void floor_value();
 	double to_float() const;
+	String to_plain_scientific() const;
 
 	String _to_string() const;
 
@@ -73,6 +74,7 @@ protected:
 private:
 	static Ref<BigInt> _type_check(const Variant &n);
 	static void _size_check(double p_mantissa);
+	static void _get_values(const Variant &n, double &r_mantissa, int64_t &r_exponent);
 
 	double mantissa = 1.0;
 	int64_t exponent = 0;
