@@ -73,6 +73,7 @@ Check out my other Godot plugins:
 | [<img src="https://raw.githubusercontent.com/shoyguer/time-tick/refs/heads/main/brand/header_image.png" width="192">](https://github.com/shoyguer/time-tick) | Flexible time management & tick system |
 | [<img src="https://raw.githubusercontent.com/shoyguer/stat-pool/refs/heads/main/brand/header_image.png" width="192">](https://github.com/shoyguer/stat-pool) | Flexible stat management system (for Health, Mana, Stamina, money etc) |
 | [<img src="https://raw.githubusercontent.com/shoyguer/seed/refs/heads/main/brand/header_image.png" width="192">](https://github.com/shoyguer/seed) | A simple Random seed generation system |
+| [<img src="https://raw.githubusercontent.com/shoyguer/advanced-button/refs/heads/main/src/brand/header_image.png" width="192">](https://github.com/shoyguer/advanced-button) | Complete and Customizeable button with useful features |
 
 ## Support
 If this plugin helped you, please, consider:
