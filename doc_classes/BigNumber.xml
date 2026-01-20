@@ -4,7 +4,7 @@
 		A high-performance Big Number class designed for idle, incremental, and strategy games requiring massive numbers.
 	</brief_description>
 	<description>
-		[BigNumber] is a [RefCounted] class designed to handle numbers efficiently that far exceed the limits of standard 64-bit integers and floating-point types.
+		[BigNumber] handles numbers that far exceed the limits of standard 64-bit integers and floating-point types, efficiently.
 
 		Internally, it uses a mantissa and exponent representation (similar to scientific notation), allowing it to store and manipulate vastly large numbers while maintaining relevant precision.
 
