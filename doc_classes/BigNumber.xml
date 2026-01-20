@@ -12,6 +12,7 @@
 		- [b]Scientific notation:[/b] Standard scientific format (e.g., "1.23e15").
 		- [b]Metric symbols:[/b] SI prefixes like k, M, G, T, P, E (e.g., "1.5M").
 		- [b]Metric names:[/b] Full names like million, billion, trillion (e.g., "1.5 million").
+		- [b]Short Scale names:[/b] Standard short scale names up to novemdecillion (e.g., "2.3 billion").
 		- [b]AA notation:[/b] Alphabetical notation often used in mobile idle games (e.g., "aa", "ab", "ac").
 
 		Note: While this class manages extremely large numbers, it is a floating-point based "Big Number" implementation, not an arbitrary-precision integer library (like GMP). It trades absolute precision at the lowest decimal places for extreme range and performance, which is ideal for game mechanics.
