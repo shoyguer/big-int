@@ -8,6 +8,49 @@ using namespace godot;
 const double BigNumber::MANTISSA_MAX = 1209600.0;
 const double BigNumber::MANTISSA_PRECISION = 0.0000001;
 
+namespace {
+const char *METRIC_SYMBOLS[] = {
+	"", "k", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q",
+	"V", "U", "Td", "S", "Ri", "Qx", "Pp", "O", "N", "Mi"
+};
+
+const char *METRIC_NAMES[] = {
+	"", "kilo", "mega", "giga", "tera", "peta", "exa", "zetta", "yotta", "ronna", "quetta",
+	"vunda", "uda", "treda", "sorta", "rinta", "quexa", "pepta", "ocha", "nena", "ming"
+};
+
+const char *ALPHABET[] = {
+	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+	"n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+};
+
+// ln(10)
+const double LOG_10 = 2.302585092994046;
+
+struct OptionKeys {
+	StringName default_mantissa = "default_mantissa";
+	StringName default_exponent = "default_exponent";
+	StringName dynamic_decimals = "dynamic_decimals";
+	StringName dynamic_numbers = "dynamic_numbers";
+	StringName small_decimals = "small_decimals";
+	StringName thousand_decimals = "thousand_decimals";
+	StringName big_decimals = "big_decimals";
+	StringName scientific_decimals = "scientific_decimals";
+	StringName logarithmic_decimals = "logarithmic_decimals";
+	StringName maximum_trailing_zeroes = "maximum_trailing_zeroes";
+	StringName thousand_separator = "thousand_separator";
+	StringName decimal_separator = "decimal_separator";
+	StringName suffix_separator = "suffix_separator";
+	StringName reading_separator = "reading_separator";
+	StringName thousand_name = "thousand_name";
+};
+
+const OptionKeys &get_option_keys() {
+	static OptionKeys k;
+	return k;
+}
+}
+
 BigNumber::BigNumber() {
 	mantissa = 1.0;
 	exponent = 0;
@@ -102,7 +145,7 @@ void BigNumber::normalize() {
 	}
 
 	if (mantissa >= 10.0 || mantissa < 1.0) {
-		double log_val = Math::log(mantissa) / Math::log(10.0);
+		double log_val = Math::log(mantissa) / LOG_10;
 		int64_t exp_change = (int64_t)Math::floor(log_val);
 
 		exponent += exp_change;
@@ -143,7 +186,7 @@ void BigNumber::_get_values(const Variant &n, double &r_mantissa, int64_t &r_exp
 	}
 
 	if (r_mantissa >= 10.0 || r_mantissa < 1.0) {
-		double log_val = Math::log(r_mantissa) / Math::log(10.0);
+		double log_val = Math::log(r_mantissa) / LOG_10;
 		int64_t exp_change = (int64_t)Math::floor(log_val);
 
 		r_exponent += exp_change;
@@ -357,7 +400,7 @@ Ref<BigNumber> BigNumber::power_equals(const Variant &n) {
 		}
 		// Handling negative int power? Original GDScript says "not fully supported in simple power", 
 		// but simple logic: x^-p = 1 / x^p.
-		// For now adapting GDScript logic:
+		// For now using GDScript logic:
 		/*
 			var new_exponent: int = exponent * p
 			var new_mantissa: float = mantissa ** float(p)
@@ -408,10 +451,6 @@ Ref<BigNumber> BigNumber::square_root() const {
 		res->exponent = res->exponent / 2;
 	} else {
 		res->mantissa = Math::sqrt(res->mantissa * 10.0);
-		// integer division in C++ rounds towards zero, but for negative odd numbers?
-		// e.g. -1 / 2 = 0. We want floor behavior usually for exponent math?
-		// check GDScript: (res.exponent - 1) / 2
-		// If exp=5. (5-1)/2 = 2. sqrt(m*10)*10^2 -> (sqrt(m*10))^2 * 10^4 = m*10 * 10^4 = m*10^5. Correct.
 		res->exponent = (res->exponent - 1) / 2;
 	}
 	
@@ -426,11 +465,11 @@ Ref<BigNumber> BigNumber::absolute() const {
 }
 
 double BigNumber::log10() const {
-	return (double)exponent + (Math::log(mantissa) / Math::log(10.0));
+	return (double)exponent + (Math::log(mantissa) / LOG_10);
 }
 
 double BigNumber::ln() const {
-	return log10() * 2.302585092994046;
+	return log10() * LOG_10;
 }
 
 void BigNumber::floor_value() {
@@ -486,36 +525,34 @@ String BigNumber::_to_string() const {
 Dictionary BigNumber::get_options() {
 	static Dictionary options;
 	if (options.is_empty()) {
-		options["default_mantissa"] = 1.0;
-		options["default_exponent"] = 0;
-		options["dynamic_decimals"] = false;
-		options["dynamic_numbers"] = 4;
-		options["small_decimals"] = 2;
-		options["thousand_decimals"] = 2;
-		options["big_decimals"] = 2;
-		options["scientific_decimals"] = 2;
-		options["logarithmic_decimals"] = 2;
-		options["maximum_trailing_zeroes"] = 3;
-		options["thousand_separator"] = ",";
-		options["decimal_separator"] = ".";
-		options["suffix_separator"] = "";
-		options["reading_separator"] = "";
-		options["thousand_name"] = "thousand";
+		const OptionKeys &k = get_option_keys();
+		options[k.default_mantissa] = 1.0;
+		options[k.default_exponent] = 0;
+		options[k.dynamic_decimals] = false;
+		options[k.dynamic_numbers] = 4;
+		options[k.small_decimals] = 2;
+		options[k.thousand_decimals] = 2;
+		options[k.big_decimals] = 2;
+		options[k.scientific_decimals] = 2;
+		options[k.logarithmic_decimals] = 2;
+		options[k.maximum_trailing_zeroes] = 3;
+		options[k.thousand_separator] = ",";
+		options[k.decimal_separator] = ".";
+		options[k.suffix_separator] = "";
+		options[k.reading_separator] = "";
+		options[k.thousand_name] = "thousand";
 	}
 	return options;
 }
 
 String BigNumber::to_scientific(bool no_decimals_on_small_values, bool force_decimals) const {
-	static const StringName sn_scientific_decimals("scientific_decimals");
-	static const StringName sn_dynamic_decimals("dynamic_decimals");
-	static const StringName sn_dynamic_numbers("dynamic_numbers");
-	static const StringName sn_decimal_separator("decimal_separator");
+	const OptionKeys &k = get_option_keys();
 
 	Dictionary opts = get_options();
-	int scientific_decimals = opts[sn_scientific_decimals];
-	bool dynamic_decimals = opts[sn_dynamic_decimals];
-	int dynamic_numbers = opts[sn_dynamic_numbers];
-	String decimal_separator = opts[sn_decimal_separator];
+	int scientific_decimals = opts[k.scientific_decimals];
+	bool dynamic_decimals = opts[k.dynamic_decimals];
+	int dynamic_numbers = opts[k.dynamic_numbers];
+	String decimal_separator = opts[k.decimal_separator];
 	
 	if (exponent < 3) {
 		double decimal_increments = 1.0 / (Math::pow(10.0, scientific_decimals) / 10.0);
@@ -559,22 +596,16 @@ String BigNumber::to_scientific(bool no_decimals_on_small_values, bool force_dec
 }
 
 String BigNumber::to_prefix(bool no_decimals_on_small_values, bool use_thousand_symbol, bool force_decimals, bool scientific_prefix) const {
-	static const StringName sn_small_decimals("small_decimals");
-	static const StringName sn_thousand_decimals("thousand_decimals");
-	static const StringName sn_big_decimals("big_decimals");
-	static const StringName sn_dynamic_decimals("dynamic_decimals");
-	static const StringName sn_dynamic_numbers("dynamic_numbers");
-	static const StringName sn_decimal_separator("decimal_separator");
-	static const StringName sn_thousand_separator("thousand_separator");
+	const OptionKeys &k = get_option_keys();
 
 	Dictionary opts = get_options();
-	int small_decimals = opts[sn_small_decimals];
-	int thousand_decimals = opts[sn_thousand_decimals];
-	int big_decimals = opts[sn_big_decimals];
-	bool dynamic_decimals = opts[sn_dynamic_decimals];
-	int dynamic_numbers = opts[sn_dynamic_numbers];
-	String decimal_separator = opts[sn_decimal_separator];
-	String thousand_separator = opts[sn_thousand_separator];
+	int small_decimals = opts[k.small_decimals];
+	int thousand_decimals = opts[k.thousand_decimals];
+	int big_decimals = opts[k.big_decimals];
+	bool dynamic_decimals = opts[k.dynamic_decimals];
+	int dynamic_numbers = opts[k.dynamic_numbers];
+	String decimal_separator = opts[k.decimal_separator];
+	String thousand_separator = opts[k.thousand_separator];
 	
 	double number = mantissa;
 	if (!scientific_prefix) {
@@ -630,9 +661,9 @@ String BigNumber::to_aa(bool no_decimals_on_small_values, bool use_thousand_symb
 		suffixes_aa["4"] = "t";
 	}
 
-	static const StringName sn_suffix_separator("suffix_separator");
+	const OptionKeys &k = get_option_keys();
 	Dictionary opts = get_options();
-	String suffix_separator = opts[sn_suffix_separator];
+	String suffix_separator = opts[k.suffix_separator];
 	
 	int64_t target = exponent / 3;
 	String aa_index = String::num_int64(target);
@@ -640,17 +671,13 @@ String BigNumber::to_aa(bool no_decimals_on_small_values, bool use_thousand_symb
 	
 	if (!suffixes_aa.has(aa_index)) {
 		// Generate suffix
-		static const char* alphabet[] = {
-			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-			"n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-		};
 		int64_t offset = target + 22; // Offset matching standard AA
 		int64_t base = 26;
 		
 		while (offset > 0) {
 			offset -= 1;
 			int digit = offset % base;
-			suffix = String(alphabet[digit]) + suffix;
+			suffix = String(ALPHABET[digit]) + suffix;
 			offset /= base;
 		}
 		suffixes_aa[aa_index] = suffix;
@@ -667,60 +694,30 @@ String BigNumber::to_aa(bool no_decimals_on_small_values, bool use_thousand_symb
 }
 
 String BigNumber::to_metric_symbol(bool no_decimals_on_small_values) const {
-	static Dictionary suffixes_metric_symbol;
-	if (suffixes_metric_symbol.is_empty()) {
-		suffixes_metric_symbol["0"] = "";
-		suffixes_metric_symbol["1"] = "k";
-		suffixes_metric_symbol["2"] = "M";
-		suffixes_metric_symbol["3"] = "G";
-		suffixes_metric_symbol["4"] = "T";
-		suffixes_metric_symbol["5"] = "P";
-		suffixes_metric_symbol["6"] = "E";
-		suffixes_metric_symbol["7"] = "Z";
-		suffixes_metric_symbol["8"] = "Y";
-		suffixes_metric_symbol["9"] = "R";
-		suffixes_metric_symbol["10"] = "Q";
-	}
 	Dictionary opts = get_options();
-	static const StringName sn_suffix_separator("suffix_separator");
-	String suffix_separator = opts[sn_suffix_separator];
+	const OptionKeys &k = get_option_keys();
+	String suffix_separator = opts[k.suffix_separator];
 
 	int64_t target = exponent / 3;
-	String t_str = String::num_int64(target);
-	
-	if (!suffixes_metric_symbol.has(t_str)) {
-		return to_scientific();
+
+	if (target >= 0 && target < (int64_t)(sizeof(METRIC_SYMBOLS) / sizeof(METRIC_SYMBOLS[0]))) {
+		return to_prefix(no_decimals_on_small_values) + suffix_separator + METRIC_SYMBOLS[target];
 	} else {
-		return to_prefix(no_decimals_on_small_values) + suffix_separator + String(suffixes_metric_symbol[t_str]);
+		return to_scientific();
 	}
 }
 
 String BigNumber::to_metric_name(bool no_decimals_on_small_values) const {
-	static Dictionary suffixes_metric_name;
-	if (suffixes_metric_name.is_empty()) {
-		suffixes_metric_name["0"] = "";
-		suffixes_metric_name["1"] = "kilo";
-		suffixes_metric_name["2"] = "mega";
-		suffixes_metric_name["3"] = "giga";
-		suffixes_metric_name["4"] = "tera";
-		suffixes_metric_name["5"] = "peta";
-		suffixes_metric_name["6"] = "exa";
-		suffixes_metric_name["7"] = "zetta";
-		suffixes_metric_name["8"] = "yotta";
-		suffixes_metric_name["9"] = "ronna";
-		suffixes_metric_name["10"] = "quetta";
-	}
 	Dictionary opts = get_options();
-	static const StringName sn_suffix_separator("suffix_separator");
-	String suffix_separator = opts[sn_suffix_separator];
+	const OptionKeys &k = get_option_keys();
+	String suffix_separator = opts[k.suffix_separator];
 
 	int64_t target = exponent / 3;
-	String t_str = String::num_int64(target);
-	
-	if (!suffixes_metric_name.has(t_str)) {
-		return to_scientific();
+
+	if (target >= 0 && target < (int64_t)(sizeof(METRIC_NAMES) / sizeof(METRIC_NAMES[0]))) {
+		return to_prefix(no_decimals_on_small_values) + suffix_separator + METRIC_NAMES[target];
 	} else {
-		return to_prefix(no_decimals_on_small_values) + suffix_separator + String(suffixes_metric_name[t_str]);
+		return to_scientific();
 	}
 }
 
