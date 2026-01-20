@@ -64,6 +64,7 @@ public:
 	String to_aa(bool no_decimals_on_small_values = false, bool use_thousand_symbol = true, bool force_decimals = false) const;
 	String to_metric_symbol(bool no_decimals_on_small_values = false) const;
 	String to_metric_name(bool no_decimals_on_small_values = false) const;
+	String to_short_scale(bool no_decimals_on_small_values = false) const;
 
 	// Static configuration
 	static Dictionary get_options();

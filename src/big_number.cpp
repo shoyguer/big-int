@@ -19,6 +19,11 @@ const char *METRIC_NAMES[] = {
 	"vunda", "uda", "treda", "sorta", "rinta", "quexa", "pepta", "ocha", "nena", "ming"
 };
 
+const char *SHORT_SCALE_NAMES[] = {
+	"", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion",
+	"decillion", "undecillion", "duodecillion", "tredecillion", "quattuordecillion", "quindecillion", "sexdecillion", "septendecillion", "octodecillion", "novemdecillion"
+};
+
 const char *ALPHABET[] = {
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
 	"n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
@@ -721,6 +726,20 @@ String BigNumber::to_metric_name(bool no_decimals_on_small_values) const {
 	}
 }
 
+String BigNumber::to_short_scale(bool no_decimals_on_small_values) const {
+	Dictionary opts = get_options();
+	const OptionKeys &k = get_option_keys();
+	String suffix_separator = opts[k.suffix_separator];
+
+	int64_t target = exponent / 3;
+
+	if (target >= 0 && target < (int64_t)(sizeof(SHORT_SCALE_NAMES) / sizeof(SHORT_SCALE_NAMES[0]))) {
+		return to_prefix(no_decimals_on_small_values) + suffix_separator + SHORT_SCALE_NAMES[target];
+	} else {
+		return to_scientific();
+	}
+}
+
 void BigNumber::_bind_methods() {
 	ClassDB::bind_static_method("BigNumber", D_METHOD("get_options"), &BigNumber::get_options);
 
@@ -729,6 +748,7 @@ void BigNumber::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("to_aa", "no_decimals_on_small_values", "use_thousand_symbol", "force_decimals"), &BigNumber::to_aa, DEFVAL(false), DEFVAL(true), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("to_metric_symbol", "no_decimals_on_small_values"), &BigNumber::to_metric_symbol, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("to_metric_name", "no_decimals_on_small_values"), &BigNumber::to_metric_name, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("to_short_scale", "no_decimals_on_small_values"), &BigNumber::to_short_scale, DEFVAL(false));
 
 	ClassDB::bind_method(D_METHOD("set_mantissa", "mantissa"), &BigNumber::set_mantissa);
 	ClassDB::bind_method(D_METHOD("get_mantissa"), &BigNumber::get_mantissa);

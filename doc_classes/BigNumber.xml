@@ -204,7 +204,7 @@
 			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
 			<description>
 				Formats the number using full metric names (e.g., 1.50 million, 2.45 billion).
-				If the number exceeds the defined metric prefixes, it falls back to scientific notation.
+				Supported array: kilo, mega, giga, tera, peta, exa, zetta, yotta, ronna, quetta, vunda, uda, treda, sorta, rinta, quexa, pepta, ocha, nena, ming.
 			</description>
 		</method>
 		<method name="to_metric_symbol" qualifiers="const">
@@ -212,7 +212,7 @@
 			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
 			<description>
 				Formats the number using standard International System of Units (SI) symbol suffixes (e.g., 1.50 M, 2.45 G).
-				Supported array: k, M, G, T, P, E, Z, Y, R, Q.
+				Supported array: k, M, G, T, P, E, Z, Y, R, Q, V, U, Td, S, Ri, Qx, Pp, O, N, Mi.
 				Falls back to scientific notation for larger values.
 			</description>
 		</method>
@@ -242,13 +242,22 @@
 				Respects global options for decimal places and separators.
 			</description>
 		</method>
+		<method name="to_short_scale" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="no_decimals_on_small_values" type="bool" default="false" />
+			<description>
+				Formats the number using Standard Short Scale names (e.g., million, billion, trillion, quadrillion, etc.).
+				This format is widely used in Europe and most modern English-speaking countries for financial and large game numbers.
+				Supported range extends up to novemdecillion (10^60).
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="exponent" type="int" setter="set_exponent" getter="get_exponent" default="0">
 			The exponent part of the number. The value is [code]mantissa * 10^exponent[/code].
 		</member>
 		<member name="mantissa" type="float" setter="set_mantissa" getter="get_mantissa" default="1.0">
-			The mantissa (significand) part of the number. When normalized, this is a value [code]>= 1.0[/code] and [code]&lt; 10.0[/code].
+			The mantissa (significand) part of the number. When normalized, this is a value [code]&gt;= 1.0[/code] and [code]&lt; 10.0[/code].
 		</member>
 	</members>
 </class>
