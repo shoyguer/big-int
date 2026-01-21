@@ -15,15 +15,15 @@ Hardware used for testing:
 - 512 GB SSD M.2
 
 ## Why Use BigNumber?
-Managing massive numbers in games can be performance-heavy and complex. This plugin provides you with:
-- **Infinite Scaling**: Capable of handling numbers much larger than `float` or `int64`.
-- **High Performance**: Written in C++ to be significantly faster than GDScript implementations.
-- **Rich Formatting**: Built-in support for multiple notation styles:
+Managing massive numbers in games are performance-heavy and complex. This plugin provides you with:
+- Capable of handling numbers much larger than float or int
+- High Performance
+- Built-in support for multiple notation styles:
     - Scientific (1.23e45)
     - AA Notation (aa, ab, ac...)
     - Metric Symbols (k, M, B, T...)
     - Metric Names (kilo, mega, giga...)
-- **Easy-to-use API**: Methods similar to standard arithmetic operations.
+- Methods similar to standard arithmetic operations.
 
 This is a GDExtension plugin, built with performance in mind.
 
