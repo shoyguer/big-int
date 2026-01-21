@@ -15,7 +15,7 @@ Hardware used for testing:
 - 512 GB SSD M.2
 
 ## Why Use BigNumber?
-Managing massive numbers in games are performance-heavy and complex. This plugin provides you with:
+Managing massive numbers in games is performance-heavy and complex. This plugin provides you with:
 - Capable of handling numbers much larger than float or int
 - High Performance
 - Built-in support for multiple notation styles:
