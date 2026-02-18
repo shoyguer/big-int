@@ -1,6 +1,6 @@
 [configuration]
 entry_symbol = "big_number_init"
-compatibility_minimum = "4.5"
+compatibility_minimum = "4.6"
 
 [icons]
 BigNumber = "./big_number.svg"
