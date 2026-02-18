@@ -281,7 +281,11 @@ jobs:
 
       # Create zip archive
       - name: Create zip archive
-        run: zip -r "${{ env.PLUGIN_NAME }}_${{ github.event.inputs.version }}.zip" "addons"
+        run: |
+          WRAPPER="${{ env.PLUGIN_NAME }}_${{ github.event.inputs.version }}"
+          mkdir -p "$WRAPPER"
+          cp -R addons "$WRAPPER/"
+          zip -r "${WRAPPER}.zip" "$WRAPPER/"
 
       # Upload final artifact
       - name: Upload final artifact
@@ -318,7 +322,7 @@ jobs:
         run: |
           # Create the release with the specified tag and name
           gh release create "${{ github.event.inputs.version }}" \
-            --title "${{ steps.godot-version.outputs.plugin_name }} v${{ github.event.inputs.version }} - Release" \
+            --title "v${{ github.event.inputs.version }} - Release" \
             --notes "## ${{ steps.godot-version.outputs.plugin_name }} v${{ github.event.inputs.version }}
           
           For Godot ${{ steps.godot-version.outputs.version }}.x only.
